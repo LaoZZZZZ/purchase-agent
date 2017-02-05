@@ -1,0 +1,1 @@
+mvn archetype:generate -DgroupId=com.purchase-agent.webapp -DartifactId=giraffe  -Dversion=1.0 -Dpackage=com.purchase-agent.webapp  -DarchetypeGroupId=com.google.appengine.archetypes -DarchetypeArtifactId=appengine-skeleton-archetype -DarchetypeVersion=1.8.7
