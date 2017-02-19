@@ -9,11 +9,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <appengine.target.version>1.9.49</appengine.target.version>
+        <appengine.target.version>1.9.2</appengine.target.version>
         <spring.version>4.0.6.RELEASE</spring.version>
         <jersey.version>2.11</jersey.version>
         <jackson.version>2.4.1</jackson.version>
         <objectify.version>5.1.14</objectify.version>
+        <remote.api.version>1.9.49</remote.api.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -39,7 +40,7 @@
             <dependency>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-remote-api</artifactId>
-                <version>${appengine.target.version}</version>
+                <version>${remote.api.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.appengine</groupId>
