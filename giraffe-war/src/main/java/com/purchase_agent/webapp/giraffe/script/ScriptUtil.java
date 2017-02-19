@@ -1,7 +1,7 @@
 package com.purchase_agent.webapp.giraffe.script;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.repackaged.com.google.api.client.util.Throwables;
+import com.google.common.base.Throwables;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import com.google.appengine.api.datastore.DatastoreService;
