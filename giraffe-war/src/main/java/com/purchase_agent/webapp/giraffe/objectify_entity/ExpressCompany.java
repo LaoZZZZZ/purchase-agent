@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.util.List;
 /**
  * Created by lukez on 2/15/17.
  */
@@ -31,5 +32,5 @@ public class ExpressCompany {
     private double rating;
 
     //TODO(lukez): Come up a data model to represent hours.
-    private String hours;
+    private List<Hours> hours;
 }
