@@ -46,6 +46,11 @@
             <artifactId>objectify</artifactId>
             <version>${objectify.version}</version>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda.version}</version>
+        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
