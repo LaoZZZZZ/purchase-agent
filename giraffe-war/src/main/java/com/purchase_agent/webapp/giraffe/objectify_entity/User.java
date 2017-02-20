@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import com.googlecode.objectify.condition.IfNotNull;
 import org.joda.time.DateTime;
 import java.util.List;
 
@@ -40,6 +41,12 @@ public class User {
     private String address;
 
     private Status status;
+
+    @Index
+    private String phoneNumber;
+
+    @Index(IfNotNull.class)
+    private String activationToken;
 
     public long getUserId() {
         return userId;
@@ -109,7 +116,31 @@ public class User {
         return status;
     }
 
-    public void setDeleted(final Status status) {
+    public void setStatus(final Status status) {
         this.status = status;
+    }
+
+    public List<String> getRecoverCodes() {
+        return recoverCodes;
+    }
+
+    public void setRecoverCodes(final List<String> recoverCodes) {
+        this.recoverCodes = recoverCodes;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(final String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
     }
 }
