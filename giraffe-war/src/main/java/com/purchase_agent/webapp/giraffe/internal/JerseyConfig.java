@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.internal;
 
 import com.googlecode.objectify.ObjectifyFactory;
+
 import com.googlecode.objectify.ObjectifyService;
 import com.purchase_agent.webapp.giraffe.greetings.Greetings;
 import com.purchase_agent.webapp.giraffe.hk2_binding.EnvironmentBinder;
@@ -33,5 +34,7 @@ public class JerseyConfig extends ResourceConfig {
         register(new PasswordValidatorBinder());
         register(new LinksBinder());
         register(new EnvironmentBinder());
+        registerEntities();
+
     }
 }
