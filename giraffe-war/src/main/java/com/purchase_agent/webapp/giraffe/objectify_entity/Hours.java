@@ -18,7 +18,7 @@ public class Hours {
     private DateTime start;
     private DateTime end;
 
-    Hours() {
+    public Hours() {
     }
 
     public Day getDay() {

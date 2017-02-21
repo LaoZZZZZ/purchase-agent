@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  * Created by lukez on 2/20/17.
  */
 public class PasswordValidatorBinder extends AbstractBinder{
-    private class PasswordValidatorFactory  implements Factory<PasswordValidator> {
+    private static class PasswordValidatorFactory  implements Factory<PasswordValidator> {
         private final PasswordValidator passwordValidator;
 
         @Inject

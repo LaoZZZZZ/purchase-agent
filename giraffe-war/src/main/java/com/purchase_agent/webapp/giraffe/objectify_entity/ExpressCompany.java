@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by lukez on 2/15/17.
  */
-@Entity
+@Entity(name = "PA_EXPRESS_COMPANY")
 public class ExpressCompany {
     public enum Status {
         CLOSED,
@@ -33,6 +33,8 @@ public class ExpressCompany {
 
     private List<Hours> hours;
 
+    ExpressCompany() {
+    }
     public long getId() {
         return id;
     }

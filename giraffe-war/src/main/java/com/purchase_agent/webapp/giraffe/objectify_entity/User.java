@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by lukez on 2/18/17.
  */
-@Entity
+@Entity(name = "PA_USER")
 public class User {
     public enum Status {
         ACTIVE,
@@ -21,7 +21,7 @@ public class User {
     }
 
     @Id
-    private long userId;
+    private String userId;
 
     @Index
     private String username;
@@ -48,11 +48,13 @@ public class User {
     @Index(IfNotNull.class)
     private String activationToken;
 
-    public long getUserId() {
+    public User() {
+    }
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(final long userId) {
+    public void setUserId(final String userId) {
         this.userId = userId;
     }
 

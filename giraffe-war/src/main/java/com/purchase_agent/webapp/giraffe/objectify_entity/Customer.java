@@ -7,10 +7,11 @@ import com.googlecode.objectify.annotation.Index;
 /**
  * Created by lukez on 2/15/17.
  */
-@Entity
+@Entity(name = "PA_CUSTOMER")
 public class Customer {
     @Id
     long id;
+
     @Index
     private String userName;
 
@@ -24,6 +25,8 @@ public class Customer {
     @Index
     private String wechat;
 
+    Customer() {
+    }
     public long getId() {
         return id;
     }

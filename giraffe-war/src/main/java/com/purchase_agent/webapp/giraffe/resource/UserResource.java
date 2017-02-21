@@ -14,17 +14,19 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.PUT;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
+
 /**
  * Created by lukez on 2/19/17.
  */
 @Path("user")
-@Produces("application/json")
+@Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
     private static final Logger logger = Logger.getLogger(UserResource.class.getName());
 
@@ -33,13 +35,13 @@ public class UserResource {
 
     @Inject
     public UserResource(final PasswordValidator passwordValidator,
-                        final Links links ) {
+                        final Links links) {
         this.passwordValidator = passwordValidator;
         this.links = links;
     }
 
-    @GET
     @Path("login/")
+    @GET
     public Response getUser(@QueryParam("username") final String username,
                             @QueryParam("password") final String password) {
         if (Strings.isNullOrEmpty(username) || Strings.isNullOrEmpty(password)) {
@@ -61,31 +63,35 @@ public class UserResource {
         return Response.ok(this.convert(persisted)).build();
     }
 
-    @Consumes("application/json")
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(final User user) {
-        com.purchase_agent.webapp.giraffe.objectify_entity.User persisted = ObjectifyService.ofy().load().key(Key.create(
-                com.purchase_agent.webapp.giraffe.objectify_entity.User.class, user.getUsername())).now();
-        if (persisted != null) {
-            logger.warning(String.format("The user %s already exists!", user.getUsername()));
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
         final String activationToken = ObjectifyService.ofy().transact(new Work<String>() {
             @Override
             public String run() {
-                final com.purchase_agent.webapp.giraffe.objectify_entity.User persisted = createPersistedUser(user);
+                com.purchase_agent.webapp.giraffe.objectify_entity.User persisted = ofy().load().key(Key.create(
+                        com.purchase_agent.webapp.giraffe.objectify_entity.User.class, user.getUsername())).now();
+                if (persisted != null) {
+                    logger.warning(String.format("The user %s already exists!", user.getUsername()));
+                    return null;
+                }
+                persisted = createPersistedUser(user);
                 logger.info("Activation token: " + persisted.getActivationToken());
+                ofy().save().entity(persisted).now();
                 return persisted.getActivationToken();
             }
         });
+        if (Strings.isNullOrEmpty(activationToken)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         logger.info("Created user location: " + this.links.forUserCreation(activationToken).toString());
         return Response.status(Response.Status.CREATED).location(this.links.forUserCreation(activationToken)).build();
     }
 
-    @Path("/activate/{activation_token}")
     @PUT
-    public Response activateUser(@QueryParam("activation_token") final String activationToken) {
+    @Path("/activate/{activation_token}")
+    public Response activateUser(@PathParam("activation_token") final String activationToken) {
         if (Strings.isNullOrEmpty(activationToken)) {
             logger.warning("The activation token is null or empty!");
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -140,6 +146,7 @@ public class UserResource {
         com.purchase_agent.webapp.giraffe.objectify_entity.User persisted =
                 new com.purchase_agent.webapp.giraffe.objectify_entity.User();
 
+        persisted.setUserId(UUID.randomUUID().toString());
         Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getUsername()));
         persisted.setUsername(user.getUsername());
         Preconditions.checkArgument(validatePassword(user.getPassword()));
@@ -158,7 +165,6 @@ public class UserResource {
         return persisted;
     }
 
-    // TODO(lu.zhao): fill in the implementation.
     private boolean validatePassword(final String password) {
         return this.passwordValidator.isValidPassword(password);
     }
