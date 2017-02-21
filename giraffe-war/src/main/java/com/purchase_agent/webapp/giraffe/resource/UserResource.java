@@ -23,7 +23,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 2/19/17.
  */
-@Path("/user/{username}")
+@Path("user")
 @Produces("application/json")
 public class UserResource {
     private static final Logger logger = Logger.getLogger(UserResource.class.getName());
