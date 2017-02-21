@@ -29,10 +29,13 @@ public class UserResource {
     private static final Logger logger = Logger.getLogger(UserResource.class.getName());
 
     private final PasswordValidator passwordValidator;
+    private final Links links;
 
     @Inject
-    public UserResource(PasswordValidator passwordValidator) {
+    public UserResource(final PasswordValidator passwordValidator,
+                        final Links links ) {
         this.passwordValidator = passwordValidator;
+        this.links = links;
     }
 
     @GET
@@ -53,12 +56,13 @@ public class UserResource {
             logger.warning("The password does not match!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+
         return Response.ok(this.convert(persisted)).build();
     }
 
     @Consumes("application/json")
     @POST
-    public Response createUser(final User user) throws RuntimeException {
+    public Response createUser(final User user) {
         com.purchase_agent.webapp.giraffe.objectify_entity.User persisted = ObjectifyService.ofy().load().key(Key.create(
                 com.purchase_agent.webapp.giraffe.objectify_entity.User.class, user.getUsername())).now();
         if (persisted != null) {
@@ -70,10 +74,12 @@ public class UserResource {
             @Override
             public String run() {
                 final com.purchase_agent.webapp.giraffe.objectify_entity.User persisted = createPersistedUser(user);
+                logger.info("Activation token: " + persisted.getActivationToken());
                 return persisted.getActivationToken();
             }
         });
-        return Response.status(Response.Status.CREATED).location(Links.forUserCreation(activationToken)).build();
+        logger.info("Created user location: " + this.links.forUserCreation(activationToken).toString());
+        return Response.status(Response.Status.CREATED).location(this.links.forUserCreation(activationToken)).build();
     }
 
     @Path("/activate/{activation_token}")
@@ -83,7 +89,6 @@ public class UserResource {
             logger.warning("The activation token is null or empty!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-
 
         return ObjectifyService.ofy().transact(new Work<Response>() {
             @Override
@@ -122,7 +127,6 @@ public class UserResource {
         if (persisted.getStatus() == com.purchase_agent.webapp.giraffe.objectify_entity.User.Status.ACTIVE) {
             user.setStatus(User.Status.ACTIVE);
         } else {
-            // If the persisted
             user.setStatus(User.Status.CLOSED);
         }
         user.setPhoneNumber(persisted.getPhoneNumber());

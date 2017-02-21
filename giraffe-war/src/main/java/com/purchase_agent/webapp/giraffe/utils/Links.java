@@ -5,7 +5,8 @@ import com.purchase_agent.webapp.giraffe.resource.UserResource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Context;
 import java.util.Map;
 import java.net.URI;
 /**
@@ -13,22 +14,16 @@ import java.net.URI;
  */
 @Singleton
 public class Links {
-    private final static Map<Environment, String> HOSTNAME = ImmutableMap.of(
-            Environment.DEVELOPMENT, "purchase-agent-dev.appspot.com",
-            Environment.PRODUCTION, "purchase-agent.appspot.com",
-            Environment.TEST, "purchase-agent-dev.appspot.com"
-            );
-    private String hostname;
+    private UriInfo uriInfo;
     @Inject
-    public Links(Environment environment) {
-        this.hostname = HOSTNAME.get(environment);
+    public Links(@Context UriInfo uriInfo) {
+        this.uriInfo = uriInfo;
     }
 
-    public static URI forUserCreation(final String activationToken) {
-        return UriBuilder.fromResource(UserResource.class)
+    public  URI forUserCreation(final String activationToken) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(UserResource.class)
                 .path("/activate/{activation_token}")
                 .resolveTemplate("activation_token", activationToken)
                 .build();
     }
-
 }
