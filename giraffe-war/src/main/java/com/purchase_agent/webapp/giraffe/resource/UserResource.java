@@ -39,20 +39,21 @@ public class UserResource {
     }
 
     @GET
-    @Consumes("application/json")
-    public Response getUser(final User user) {
-        if (user == null || Strings.isNullOrEmpty(user.getUsername())) {
+    @Path("login/")
+    public Response getUser(@QueryParam("username") final String username,
+                            @QueryParam("password") final String password) {
+        if (Strings.isNullOrEmpty(username) || Strings.isNullOrEmpty(password)) {
             logger.warning("The user is null or the username is invalid!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         com.purchase_agent.webapp.giraffe.objectify_entity.User persisted = ObjectifyService.ofy().load().key(Key.create(
-                com.purchase_agent.webapp.giraffe.objectify_entity.User.class, user.getUsername())).now();
+                com.purchase_agent.webapp.giraffe.objectify_entity.User.class, username)).now();
         if (persisted == null) {
-            logger.warning("Cant not find user " + user.getUsername());
+            logger.warning("Cant not find user " + username);
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if (!persisted.getPassword().equals(user.getPassword())) {
+        if (!persisted.getPassword().equals(password)) {
             logger.warning("The password does not match!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
