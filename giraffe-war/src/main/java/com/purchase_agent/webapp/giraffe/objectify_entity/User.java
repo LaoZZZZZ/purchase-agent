@@ -4,13 +4,14 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import com.googlecode.objectify.condition.IfNotNull;
 import org.joda.time.DateTime;
 import java.util.List;
 
 /**
  * Created by lukez on 2/18/17.
  */
-@Entity
+@Entity(name = "PA_USER")
 public class User {
     public enum Status {
         ACTIVE,
@@ -20,7 +21,7 @@ public class User {
     }
 
     @Id
-    private long userId;
+    private String userId;
 
     @Index
     private String username;
@@ -41,11 +42,19 @@ public class User {
 
     private Status status;
 
-    public long getUserId() {
+    @Index
+    private String phoneNumber;
+
+    @Index(IfNotNull.class)
+    private String activationToken;
+
+    public User() {
+    }
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(final long userId) {
+    public void setUserId(final String userId) {
         this.userId = userId;
     }
 
@@ -109,7 +118,31 @@ public class User {
         return status;
     }
 
-    public void setDeleted(final Status status) {
+    public void setStatus(final Status status) {
         this.status = status;
+    }
+
+    public List<String> getRecoverCodes() {
+        return recoverCodes;
+    }
+
+    public void setRecoverCodes(final List<String> recoverCodes) {
+        this.recoverCodes = recoverCodes;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(final String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
     }
 }
