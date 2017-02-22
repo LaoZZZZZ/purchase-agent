@@ -34,7 +34,5 @@ public class JerseyConfig extends ResourceConfig {
         register(new PasswordValidatorBinder());
         register(new LinksBinder());
         register(new EnvironmentBinder());
-        registerEntities();
-
     }
 }

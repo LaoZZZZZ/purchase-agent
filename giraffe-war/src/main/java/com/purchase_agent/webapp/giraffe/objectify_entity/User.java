@@ -21,9 +21,6 @@ public class User {
     }
 
     @Id
-    private String userId;
-
-    @Index
     private String username;
 
     private String password;
@@ -48,14 +45,11 @@ public class User {
     @Index(IfNotNull.class)
     private String activationToken;
 
-    public User() {
-    }
-    public String getUserId() {
-        return userId;
+    User() {
     }
 
-    public void setUserId(final String userId) {
-        this.userId = userId;
+    public User(final String username) {
+        this.username = username;
     }
 
     public String getUsername() {
