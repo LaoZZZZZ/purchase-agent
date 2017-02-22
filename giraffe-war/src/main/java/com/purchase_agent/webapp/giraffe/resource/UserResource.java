@@ -39,7 +39,7 @@ public class UserResource {
         this.links = links;
     }
 
-    @Path("login/")
+    @Path("login")
     @GET
     public Response getUser(@QueryParam("username") final String username,
                             @QueryParam("password") final String password) {
@@ -90,12 +90,12 @@ public class UserResource {
     @PUT
     @Path("/activate/{username}")
     public Response activateUser(@PathParam("username") final String username,
-                                 @QueryParam("activation_token") final String activationToken) {
+                                 @QueryParam("activationToken") final String activationToken) {
         if (Strings.isNullOrEmpty(username)) {
             logger.warning("The given user id is null or empty!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        if (Strings.isNullOrEmpty(activationToken)) {
+        if (   Strings.isNullOrEmpty(activationToken)) {
             logger.warning("The activation token is null or empty!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
