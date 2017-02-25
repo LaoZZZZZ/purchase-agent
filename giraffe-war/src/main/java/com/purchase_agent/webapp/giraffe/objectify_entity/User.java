@@ -37,6 +37,7 @@ public class User {
 
     private String address;
 
+    @Index
     private Status status;
 
     @Index

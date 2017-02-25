@@ -10,10 +10,10 @@ import com.googlecode.objectify.annotation.Index;
 @Entity(name = "PA_CUSTOMER")
 public class Customer {
     @Id
-    long id;
+    private long id;
 
     @Index
-    private String userName;
+    private String customerName;
 
     @Index
     private String phoneNumber;
@@ -31,12 +31,12 @@ public class Customer {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setUserName(final String userName) {
-        this.userName = userName;
+    public void setCustomerName(final String customerName) {
+        this.customerName = customerName;
     }
 
     public String getPhoneNumber() {
