@@ -1,13 +1,13 @@
 package com.purchase_agent.webapp.giraffe.objectify_entity;
 
-import  com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 /**
  * Created by lukez on 2/15/17.
  */
-@Entity
+@Entity(name = "PA_CUSTOMER")
 public class Customer {
     @Id
     private long id;
@@ -25,6 +25,8 @@ public class Customer {
     @Index
     private String wechat;
 
+    Customer() {
+    }
     public long getId() {
         return id;
     }
