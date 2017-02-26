@@ -16,6 +16,7 @@
         <objectify.version>5.1.14</objectify.version>
         <remote.api.version>1.9.49</remote.api.version>
         <joda.version>2.9.2</joda.version>
+        <junit.version>4.12</junit.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -57,6 +58,11 @@
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>${joda.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

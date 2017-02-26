@@ -52,6 +52,7 @@
             <version>${joda.version}</version>
         </dependency>
 
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
@@ -64,6 +65,11 @@
             <artifactId>appengine-api-stubs</artifactId>
             <version>${appengine.target.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
         </dependency>
     </dependencies>
     <build>
