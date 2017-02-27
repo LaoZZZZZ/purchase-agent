@@ -1,0 +1,5 @@
+general:
+	build_dir:giraffe-war
+machine:
+	java:
+		version:openjdk7
