@@ -21,7 +21,7 @@ public class UserDao {
         return new SearchImpl();
     }
 
-    private static interface Search {
+    public interface Search {
         Search email(String email);
         Search phoneNumber(String phoneNumber);
         Search activationToken(String activationToken);
