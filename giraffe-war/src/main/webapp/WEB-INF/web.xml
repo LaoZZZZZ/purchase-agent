@@ -1,57 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-<context-param>
-    <param-name>contextClass</param-name>
-    <param-value>
-        org.springframework.web.context.support.AnnotationConfigWebApplicationContext
-    </param-value>
-</context-param>
-   
-<context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-        com.purchase_agent.webapp.giraffe.internal.SpringConfig
-    </param-value>
-</context-param>
-   
-<listener>
-    <listener-class>
-        org.springframework.web.context.ContextLoaderListener
-    </listener-class>
-</listener>
-<servlet>
-    <servlet-name>jerseyServlet</servlet-name>
-    <servlet-class>
-        org.glassfish.jersey.servlet.ServletContainer
-    </servlet-class>
-    <init-param>
-        <param-name>javax.ws.rs.Application</param-name>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <context-param>
+        <param-name>contextClass</param-name>
         <param-value>
-            com.purchase_agent.webapp.giraffe.internal.JerseyConfig
+            org.springframework.web.context.support.AnnotationConfigWebApplicationContext
         </param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-</servlet>
-<servlet>
-    <display-name>Remote API Servlet</display-name>
-    <servlet-name>RemoteApiServlet</servlet-name>
-    <servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-</servlet>
-<servlet-mapping>
-    <servlet-name>RemoteApiServlet</servlet-name>
-    <url-pattern>/remote_api</url-pattern>
-</servlet-mapping>
-<servlet-mapping>
-    <servlet-name>jerseyServlet</servlet-name>
-    <url-pattern>/*</url-pattern>
-</servlet-mapping>
-<filter>
-    <filter-name>ObjectifyFilter</filter-name>
-    <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
-</filter>
-<filter-mapping>
-    <filter-name>ObjectifyFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-</filter-mapping>
+    </context-param>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            com.purchase_agent.webapp.giraffe.internal.SpringConfig
+        </param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>jerseyServlet</servlet-name>
+        <servlet-class>
+            org.glassfish.jersey.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>
+                com.purchase_agent.webapp.giraffe.internal.JerseyConfig
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>com.purchase_agent.webapp.giraffe.resource;
+                com.purchase_agent.webapp.giraffe.filters</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>com.purchase_agent.webapp.giraffe.filters.AuthenticationFilter</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+            <param-value>com.purchase_agent.webapp.giraffe.filters.UserAuthResponseFilter;
+                com.purchase_agent.webapp.giraffe.filters.SensitiveInfoFilter</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <display-name>Remote API Servlet</display-name>
+        <servlet-name>RemoteApiServlet</servlet-name>
+        <servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RemoteApiServlet</servlet-name>
+        <url-pattern>/remote_api</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>jerseyServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

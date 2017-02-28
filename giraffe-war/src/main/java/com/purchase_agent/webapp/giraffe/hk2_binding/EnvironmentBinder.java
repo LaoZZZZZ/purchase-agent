@@ -11,7 +11,6 @@ import javax.inject.Singleton;
  * Created by lukez on 2/20/17.
  */
 public class EnvironmentBinder extends AbstractBinder {
-
     private static class EnvironmentFactory implements Factory<Environment> {
         private Environment environment = Environment.PRODUCTION;
 

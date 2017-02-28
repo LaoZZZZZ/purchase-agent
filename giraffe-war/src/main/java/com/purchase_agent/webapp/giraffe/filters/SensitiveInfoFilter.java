@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import javax.annotation.Priority;
 import javax.inject.Inject;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -13,7 +14,7 @@ import javax.ws.rs.ext.Provider;
 /**
  * Created by lukez on 2/19/17.
  */
-@Priority(1000)
+@Priority(Priorities.HEADER_DECORATOR)
 @Provider
 public class SensitiveInfoFilter implements ContainerResponseFilter {
     private static final Logger logger = Logger.getLogger(SensitiveInfoFilter.class.getName());
