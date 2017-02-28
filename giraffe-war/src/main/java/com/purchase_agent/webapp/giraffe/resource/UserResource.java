@@ -5,6 +5,7 @@ import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Work;
+import com.purchase_agent.webapp.giraffe.filters.SensitiveInfoFilter;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import com.purchase_agent.webapp.giraffe.utils.PasswordValidator;
@@ -31,12 +32,15 @@ public class UserResource {
 
     private final PasswordValidator passwordValidator;
     private final Links links;
+    private final SensitiveInfoFilter sensitiveInfoFilter;
 
     @Inject
     public UserResource(final PasswordValidator passwordValidator,
-                        final Links links) {
+                        final Links links,
+                        final SensitiveInfoFilter sensitiveInfoFilter) {
         this.passwordValidator = passwordValidator;
         this.links = links;
+        this.sensitiveInfoFilter = sensitiveInfoFilter;
     }
 
     @Path("login")
@@ -59,7 +63,7 @@ public class UserResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        return Response.ok(this.convert(persisted)).build();
+        return Response.ok(this.convert(persisted)).header(this.sensitiveInfoFilter.getHeader(), "hello,world").build();
     }
 
     @POST
