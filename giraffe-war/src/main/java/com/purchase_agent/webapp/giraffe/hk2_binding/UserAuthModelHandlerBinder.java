@@ -11,7 +11,7 @@ import javax.inject.Singleton;
  * Created by lukez on 2/27/17.
  */
 public class UserAuthModelHandlerBinder extends AbstractBinder {
-    public static class UserAuthModelHandlerFactory implements Factory<UserAuthModelHandler> {
+    private static class UserAuthModelHandlerFactory implements Factory<UserAuthModelHandler> {
         private UserAuthModelHandler userAuthModelHandler;
 
         public UserAuthModelHandlerFactory(final ObjectMapper objectMapper) {

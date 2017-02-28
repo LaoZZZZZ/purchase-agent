@@ -10,7 +10,7 @@ import javax.inject.Singleton;
  * Created by lukez on 2/27/17.
  */
 public class SensitiveInfoFilterBinder extends AbstractBinder {
-    public static class SensitiveInfoFilterFactory  implements Factory<SensitiveInfoFilter> {
+    private static class SensitiveInfoFilterFactory  implements Factory<SensitiveInfoFilter> {
         private SensitiveInfoFilter sensitiveInfoFilter = new SensitiveInfoFilter();
         @Override
         public SensitiveInfoFilter provide() {
