@@ -21,6 +21,7 @@ public class JerseyConfig extends ResourceConfig {
         // Enable Spring DI
         register(RequestContextFilter.class);
         register(JacksonObjectMapperConfig.class);
+        register(new ObjectMapperBinder());
 
         // Application resources
         register(Greetings.class);

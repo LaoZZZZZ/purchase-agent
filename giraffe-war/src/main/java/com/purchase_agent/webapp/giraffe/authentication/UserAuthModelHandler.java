@@ -39,9 +39,9 @@ public class UserAuthModelHandler implements AuthModelEncodeDecoder<UserAuthMode
 
     @Override
     public UserAuthModel decode(final String encodedString) throws RuntimeException {
-        Preconditions.checkArgument(Strings.isNullOrEmpty(encodedString));
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(encodedString));
         try {
-            return this.objectMapper.readValue(BaseEncoding.base64().encode(encodedString.getBytes()), UserAuthModel.class);
+            return this.objectMapper.readValue(BaseEncoding.base64().decode(encodedString), UserAuthModel.class);
         } catch (final IOException exp) {
             logger.log(Level.SEVERE, "failed to deserialize the user auth model");
             throw new RuntimeException("failed to deserialize the user auth model");

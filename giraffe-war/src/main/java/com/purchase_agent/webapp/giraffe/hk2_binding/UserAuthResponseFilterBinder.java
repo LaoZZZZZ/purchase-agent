@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 public class UserAuthResponseFilterBinder extends AbstractBinder {
     private static class UserAuthResponseFilterFactory implements Factory<UserAuthResponseFilter> {
         private UserAuthResponseFilter userAuthResponseFilter;
+
         @Inject
         public UserAuthResponseFilterFactory() {
             this.userAuthResponseFilter = new UserAuthResponseFilter();

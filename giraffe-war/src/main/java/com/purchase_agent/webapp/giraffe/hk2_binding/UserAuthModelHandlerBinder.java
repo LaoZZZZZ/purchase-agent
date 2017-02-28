@@ -5,7 +5,10 @@ import com.purchase_agent.webapp.giraffe.authentication.UserAuthModelHandler;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.ext.ContextResolver;
 
 /**
  * Created by lukez on 2/27/17.
@@ -14,6 +17,7 @@ public class UserAuthModelHandlerBinder extends AbstractBinder {
     private static class UserAuthModelHandlerFactory implements Factory<UserAuthModelHandler> {
         private UserAuthModelHandler userAuthModelHandler;
 
+        @Inject
         public UserAuthModelHandlerFactory(final ObjectMapper objectMapper) {
             this.userAuthModelHandler = new UserAuthModelHandler(objectMapper);
         }

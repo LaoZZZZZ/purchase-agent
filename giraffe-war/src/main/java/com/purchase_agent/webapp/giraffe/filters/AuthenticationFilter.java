@@ -72,14 +72,17 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         if (Strings.isNullOrEmpty(authToken)) {
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
+        logger.info("authToken:" + authToken);
         try {
             final UserAuthModel userAuthModel = this.authModelHandler.decode(authToken);
             if (Strings.isNullOrEmpty(userAuthModel.getAuthTicket())) {
                 logger.severe(String.format("got invalid auth ticket %s", userAuthModel.getAuthTicket()));
                 throw new WebApplicationException(Status.UNAUTHORIZED);
             }
+            logger.info("authticket: " + userAuthModel.getAuthTicket());
             // TODO(lukez): add customized security context
         } catch (final Exception exp) {
+            logger.severe("can not decrypt the auth token!" + authToken);
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
     }
