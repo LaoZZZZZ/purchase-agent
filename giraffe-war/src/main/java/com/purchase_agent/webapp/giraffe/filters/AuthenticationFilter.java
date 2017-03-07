@@ -11,7 +11,6 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
@@ -81,6 +80,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             }
             logger.info("authticket: " + userAuthModel.getAuthTicket());
             // TODO(lukez): add customized security context
+            // TODO(lukez): add token validation logic.
         } catch (final Exception exp) {
             logger.severe("can not decrypt the auth token!" + authToken);
             throw new WebApplicationException(Status.UNAUTHORIZED);
