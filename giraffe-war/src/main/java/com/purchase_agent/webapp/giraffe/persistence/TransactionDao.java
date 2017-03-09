@@ -7,6 +7,7 @@ import com.googlecode.objectify.cmd.Query;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
@@ -15,7 +16,26 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * TODO(lukez): add unit test for this class.
  */
 public class TransactionDao {
-    Key<Transaction> key(final String transactionId) {
+    public Get get() {
+        return new GetImpl();
+    }
+    public interface Get {
+        Transaction transactinoId(String transactionId);
+        Collection<Transaction> transactionIds(Iterable<String> transactionIds);
+    }
+
+    private static class GetImpl implements Get {
+        @Override
+        public Transaction transactinoId(final String transactionId) {
+            return ofy().load().key(key(transactionId)).now();
+        }
+        @Override
+        public Collection<Transaction> transactionIds(Iterable<String> transactionIds) {
+            return ofy().load().type(Transaction.class).ids(transactionIds).values();
+        }
+    }
+
+    public static Key<Transaction> key(final String transactionId) {
         return Key.create(Transaction.class, transactionId);
     }
 
