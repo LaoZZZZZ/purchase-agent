@@ -91,6 +91,7 @@ public class UserDao {
             return this;
         }
 
+        // TODO(lukez): add pagination logic.
         @Override
         public QueryResultIterator<User> execute() {
             query = this.query.chunk(CHUNK).limit(numResult + 1);
