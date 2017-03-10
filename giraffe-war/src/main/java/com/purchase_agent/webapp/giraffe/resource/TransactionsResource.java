@@ -22,6 +22,9 @@ public class TransactionsResource {
         this.now = now;
     }
 
+    @Path("transaction_id")
+    public Class<TransactionResource> transactionResource() {return TransactionResource.class;}
+    
     @Path("search")
     @GET
     public Response search() {
