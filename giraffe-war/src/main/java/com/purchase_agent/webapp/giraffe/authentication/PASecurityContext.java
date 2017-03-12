@@ -9,21 +9,35 @@ import java.util.Set;
  * Created by lukez on 3/12/17.
  */
 public class PASecurityContext implements SecurityContext {
-    // TODO(lukez): add google auth shcema in the future.
-    public static final Set<String> schemas = ImmutableSet.of("token", "white_listed_user");
+    public static enum Schema {
+        TOKEN("token"),
+        WHITE_LISTED("white_listed");
 
-    private String authSchema;
+        private String name;
+
+        private Schema(final String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return this.name;
+        }
+    }
+    // TODO(lukez): add google auth shcema in the future.
+    public static final Set<Schema> schemas = ImmutableSet.of(Schema.TOKEN, Schema.WHITE_LISTED);
+
+    private Schema authSchema;
     private final Set<String> roles;
     private final Principal principal;
 
-    private PASecurityContext(final Set<String> roles, final Principal principal, final String schema) {
+    private PASecurityContext(final Set<String> roles, final Principal principal, final Schema schema) {
         this.roles = roles;
         this.principal = principal;
         this.authSchema = schema;
     }
 
     public static PASecurityContext createSecurityContext(final Set<String> roles, final Principal principal,
-                                                          final String schema) {
+                                                          final Schema schema) {
         return new PASecurityContext(roles, principal, schema);
     }
 
@@ -44,7 +58,7 @@ public class PASecurityContext implements SecurityContext {
 
     @Override
     public String getAuthenticationScheme() {
-        return this.authSchema;
+        return this.authSchema.toString();
     }
 
 }

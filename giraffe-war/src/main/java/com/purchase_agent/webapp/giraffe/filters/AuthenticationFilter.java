@@ -77,6 +77,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             userModel.setAuthTicket(UUID.randomUUID().toString());
             final String encodedAuthToken = this.authModelHandler.encode(userModel);
             requestContext.getHeaders().add(AUTH_HEADER, encodedAuthToken);
+            Principal principal = new UserPrincipal(userModel);
+            requestContext.setSecurityContext(PASecurityContext.createSecurityContext(
+                    ImmutableSet.of(Roles.ANY), principal, PASecurityContext.Schema.TOKEN));
             return;
         }
 
@@ -98,7 +101,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
                 Principal principal = new UserPrincipal(userAuthModel);
                 requestContext.setSecurityContext(PASecurityContext.createSecurityContext(
-                        ImmutableSet.copyOf(user.getRoles()), principal, "white_listed_user"));
+                        ImmutableSet.copyOf(user.getRoles()), principal, PASecurityContext.Schema.WHITE_LISTED));
             }
         } else {
             logger.info("authToken:" + authToken);
@@ -127,7 +130,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 // Replace the security context
                 Principal principal = new UserPrincipal(userAuthModel);
                 requestContext.setSecurityContext(PASecurityContext.createSecurityContext(
-                        ImmutableSet.of(Roles.USER), principal, "token"));
+                        ImmutableSet.of(Roles.USER), principal, PASecurityContext.Schema.TOKEN));
             } catch (final Exception exp) {
                 logger.severe("can not decrypt the auth token!" + authToken);
                 throw new WebApplicationException(Status.UNAUTHORIZED);
