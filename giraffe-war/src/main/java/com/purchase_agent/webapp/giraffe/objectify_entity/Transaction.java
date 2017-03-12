@@ -16,7 +16,7 @@ public class Transaction {
         PAID,
         SHIPPED,
         DELIVERED,
-        RETURNED,
+        RETURNED
     }
     @Id
     private String id;
