@@ -12,7 +12,6 @@ public class UserAuthModel {
     private String authTicket;
 
     public UserAuthModel() {
-
     }
 
     public UserAuthModel(String username, String password, DateTime expireTime, String authTicket) {

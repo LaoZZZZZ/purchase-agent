@@ -5,12 +5,15 @@ import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Work;
+import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.filters.SensitiveInfoFilter;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import com.purchase_agent.webapp.giraffe.utils.PasswordValidator;
 import org.joda.time.DateTime;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.PUT;
@@ -43,6 +46,7 @@ public class UserResource {
         this.sensitiveInfoFilter = sensitiveInfoFilter;
     }
 
+    @RolesAllowed(Roles.USER)
     @Path("login")
     @GET
     public Response getUser(@QueryParam("username") final String username,
@@ -66,6 +70,7 @@ public class UserResource {
         return Response.ok(this.convert(persisted)).header(this.sensitiveInfoFilter.getHeader(), "hello,world").build();
     }
 
+    @RolesAllowed(Roles.ANY)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(final com.purchase_agent.webapp.giraffe.mediatype.User user) {
@@ -91,6 +96,7 @@ public class UserResource {
                 persisted.getUsername(),persisted.getActivationToken())).build();
     }
 
+    @RolesAllowed(Roles.USER)
     @PUT
     @Path("/activate/{username}")
     public Response activateUser(@PathParam("username") final String username,
