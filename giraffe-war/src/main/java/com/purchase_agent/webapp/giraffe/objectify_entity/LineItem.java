@@ -10,6 +10,11 @@ import org.joda.time.DateTime;
  */
 @Entity(name = "PA_LINEITEM")
 public class LineItem {
+    public static enum Status {
+        IN_STOCK,
+        SOLD,
+    }
+
     public static enum Type {
         BABY_FOOD,
         TOY,
@@ -38,6 +43,9 @@ public class LineItem {
 
     @Index
     private DateTime purchaseTime;
+
+    @Index
+    private Status status;
 
     public String getId() {
         return id;
@@ -93,5 +101,13 @@ public class LineItem {
 
     public void setBrand(final String brand) {
         this.brand = brand;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(final Status status) {
+        this.status = status;
     }
 }
