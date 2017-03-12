@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import org.joda.time.DateTime;
+import java.util.List;
 
 /**
  * Created by lukez on 2/24/17.
@@ -33,12 +34,18 @@ public class Transaction {
     private String saler;
 
     @Index
-    private String itemId;
+    private List<String> itemIds;
 
     private int numOfItems;
 
     @Index
     private Status status;
+
+    @Index
+    private boolean isDeleted;
+
+    @Index
+    private DateTime creationTime;
 
     public String getId() {
         return id;
@@ -80,12 +87,12 @@ public class Transaction {
         this.saler = saler;
     }
 
-    public String getItemId() {
-        return itemId;
+    public List<String> getItemIds() {
+        return itemIds;
     }
 
-    public void setItemId(final String itemId) {
-        this.itemId = itemId;
+    public void setItemIds(final List<String> itemIds) {
+        this.itemIds = itemIds;
     }
 
     public Status getStatus() {
@@ -102,5 +109,21 @@ public class Transaction {
 
     public void setNumOfItems(final int numOfItems) {
         this.numOfItems = numOfItems;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(final boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public DateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(final DateTime creationTime) {
+        this.creationTime = creationTime;
     }
 }

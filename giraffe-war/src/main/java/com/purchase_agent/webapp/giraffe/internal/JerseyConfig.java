@@ -11,6 +11,8 @@ import com.purchase_agent.webapp.giraffe.hk2_binding.SensitiveInfoFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthModelHandlerBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthResponseFilterBinder;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
+import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
+import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -21,6 +23,7 @@ public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
             TransactionsResource.class,
             UserResource.class,
+            LineItemsResource.class
     };
     static {
         JodaTimeTranslators.add(ObjectifyService.factory());
@@ -36,6 +39,9 @@ public class JerseyConfig extends ResourceConfig {
         register(JacksonObjectMapperConfig.class);
         register(new ObjectMapperBinder());
 
+        // DAO classes
+        register(TransactionDao.class);
+
         // Application binders
         register(new PasswordValidatorBinder());
         register(new LinksBinder());
@@ -45,6 +51,7 @@ public class JerseyConfig extends ResourceConfig {
         register(new UserAuthResponseFilterBinder());
         register(new AuthenticationFilterBinder());
         register(new RequestTimeBinder());
+
     }
 
 }
