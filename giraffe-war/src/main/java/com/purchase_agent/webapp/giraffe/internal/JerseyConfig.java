@@ -12,19 +12,24 @@ import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthModelHandlerBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthResponseFilterBinder;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
+import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
+import com.purchase_agent.webapp.giraffe.resource.TransactionResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 
 public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
+            LineItemsResource.class,
+            TransactionResource.class,
             TransactionsResource.class,
-            UserResource.class,
-            LineItemsResource.class
+            UserResource.class
     };
+
     static {
         JodaTimeTranslators.add(ObjectifyService.factory());
         for (Class<?> clazz : Entities.entities) {
@@ -32,6 +37,7 @@ public class JerseyConfig extends ResourceConfig {
         }
 
     }
+
     public JerseyConfig() {
         super(RESOURCES);
         // Enable Spring DI
@@ -39,10 +45,10 @@ public class JerseyConfig extends ResourceConfig {
         register(JacksonObjectMapperConfig.class);
         register(new ObjectMapperBinder());
 
-        // DAO classes
-        register(TransactionDao.class);
+        register(new Binder());
 
         // Application binders
+        register(new RequestTimeBinder());
         register(new PasswordValidatorBinder());
         register(new LinksBinder());
         register(new EnvironmentBinder());
@@ -50,8 +56,14 @@ public class JerseyConfig extends ResourceConfig {
         register(new SensitiveInfoFilterBinder());
         register(new UserAuthResponseFilterBinder());
         register(new AuthenticationFilterBinder());
-        register(new RequestTimeBinder());
-
     }
 
+    public static class Binder extends AbstractBinder {
+        @Override
+        protected void configure() {
+            // DAO class
+            bindAsContract(TransactionDao.class);
+            bindAsContract(UserDao.class);
+        }
+    }
 }

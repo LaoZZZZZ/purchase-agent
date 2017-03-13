@@ -41,11 +41,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private static final String EMAIL_HEADER = "emailheader";
 
     private final UserAuthModelHandler authModelHandler;
-    private final DateTime now;
+    private final javax.inject.Provider<DateTime> now;
 
     @Inject
     public AuthenticationFilter(final UserAuthModelHandler userAuthModelHandler,
-                                @RequestTime final DateTime now) {
+                                @RequestTime final javax.inject.Provider<DateTime> now) {
         this.authModelHandler = userAuthModelHandler;
         this.now = now;
     }
@@ -73,13 +73,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             final UserAuthModel userModel = new UserAuthModel();
             userModel.setUsername(username.get(0));
             userModel.setPassword(password.get(0));
-            userModel.setExpireTime(DateTime.now().plusDays(1));
+            // the token valid for one day.
+            userModel.setExpireTime(this.now.get().plusDays(1));
             userModel.setAuthTicket(UUID.randomUUID().toString());
             final String encodedAuthToken = this.authModelHandler.encode(userModel);
             requestContext.getHeaders().add(AUTH_HEADER, encodedAuthToken);
             Principal principal = new UserPrincipal(userModel);
             requestContext.setSecurityContext(PASecurityContext.createSecurityContext(
-                    ImmutableSet.of(Roles.ANY), principal, PASecurityContext.Schema.TOKEN));
+                    ImmutableSet.of(Roles.USER), principal, PASecurityContext.Schema.TOKEN));
             return;
         }
 
@@ -112,7 +113,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                     throw new WebApplicationException(Status.UNAUTHORIZED);
                 }
                 logger.info("authticket: " + userAuthModel.getAuthTicket());
-                if (this.now.isAfter(userAuthModel.getExpireTime())) {
+                if (this.now.get().isAfter(userAuthModel.getExpireTime())) {
                     logger.info("The login token already expire for user " + userAuthModel.getUsername());
                     throw new WebApplicationException(Status.UNAUTHORIZED);
                 }
