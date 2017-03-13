@@ -8,11 +8,17 @@ import com.google.appengine.api.datastore.Cursor;
 import com.googlecode.objectify.Key;
 import org.joda.time.DateTime;
 
+import javax.inject.Inject;
+
 import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 2/19/17.
  */
 public class UserDao {
+    @Inject
+    public UserDao() {
+    }
+
     Key<User> key(final String username) {
         return com.googlecode.objectify.Key.create(User.class, username);
     }

@@ -7,6 +7,7 @@ import com.googlecode.objectify.cmd.Query;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import org.joda.time.DateTime;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -16,6 +17,10 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * TODO(lukez): add unit test for this class.
  */
 public class TransactionDao {
+    @Inject
+    public TransactionDao() {
+    }
+
     public Get get() {
         return new GetImpl();
     }

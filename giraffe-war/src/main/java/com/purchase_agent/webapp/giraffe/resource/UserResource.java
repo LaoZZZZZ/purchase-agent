@@ -5,18 +5,27 @@ import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Work;
+import com.purchase_agent.webapp.giraffe.authentication.Roles;
+import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
+import com.purchase_agent.webapp.giraffe.authentication.UserPrincipal;
 import com.purchase_agent.webapp.giraffe.filters.SensitiveInfoFilter;
+import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import com.purchase_agent.webapp.giraffe.utils.PasswordValidator;
 import org.joda.time.DateTime;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.PUT;
 
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -33,20 +42,31 @@ public class UserResource {
     private final PasswordValidator passwordValidator;
     private final Links links;
     private final SensitiveInfoFilter sensitiveInfoFilter;
+    private final SecurityContext securityContext;
+    private final Provider<DateTime> now;
 
     @Inject
     public UserResource(final PasswordValidator passwordValidator,
                         final Links links,
-                        final SensitiveInfoFilter sensitiveInfoFilter) {
+                        final SensitiveInfoFilter sensitiveInfoFilter,
+                        @Context final SecurityContext securityContext,
+                        @RequestTime final Provider<DateTime> now) {
         this.passwordValidator = passwordValidator;
         this.links = links;
         this.sensitiveInfoFilter = sensitiveInfoFilter;
+        this.securityContext = securityContext;
+        this.now = now;
     }
 
-    @Path("login")
+    @RolesAllowed(Roles.USER)
+    @Path("/login")
     @GET
     public Response getUser(@QueryParam("username") final String username,
                             @QueryParam("password") final String password) {
+        if (!this.securityContext.isUserInRole(Roles.USER)) {
+            logger.warning("unauthorized user " + username);
+        }
+
         if (Strings.isNullOrEmpty(username) || Strings.isNullOrEmpty(password)) {
             logger.warning("The user is null or the username is invalid!");
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -66,6 +86,7 @@ public class UserResource {
         return Response.ok(this.convert(persisted)).header(this.sensitiveInfoFilter.getHeader(), "hello,world").build();
     }
 
+    @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(final com.purchase_agent.webapp.giraffe.mediatype.User user) {
@@ -91,15 +112,20 @@ public class UserResource {
                 persisted.getUsername(),persisted.getActivationToken())).build();
     }
 
+    @RolesAllowed(Roles.USER)
     @PUT
     @Path("/activate/{username}")
     public Response activateUser(@PathParam("username") final String username,
                                  @QueryParam("activationToken") final String activationToken) {
-        if (Strings.isNullOrEmpty(username)) {
-            logger.warning("The given user id is null or empty!");
-            return Response.status(Response.Status.BAD_REQUEST).build();
+        if (!this.securityContext.isUserInRole(Roles.USER)) {
+           logger.warning("the given user is not authorized!");
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } else {
+            UserAuthModel userAuthModel = ((UserPrincipal) this.securityContext.getUserPrincipal()).getUser();
+            logger.info("User auth model: " + userAuthModel);
         }
-        if (   Strings.isNullOrEmpty(activationToken)) {
+
+        if (Strings.isNullOrEmpty(activationToken)) {
             logger.warning("The activation token is null or empty!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }

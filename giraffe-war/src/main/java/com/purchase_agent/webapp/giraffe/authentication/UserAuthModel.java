@@ -12,7 +12,6 @@ public class UserAuthModel {
     private String authTicket;
 
     public UserAuthModel() {
-
     }
 
     public UserAuthModel(String username, String password, DateTime expireTime, String authTicket) {
@@ -56,5 +55,15 @@ public class UserAuthModel {
 
     public void setAuthTicket(final String authTicket) {
         this.authTicket = authTicket;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAuthModel{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", expireTime=" + expireTime +
+                ", authTicket='" + authTicket + '\'' +
+                '}';
     }
 }
