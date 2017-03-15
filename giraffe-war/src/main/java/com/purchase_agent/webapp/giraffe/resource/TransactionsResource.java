@@ -31,8 +31,8 @@ public class TransactionsResource {
         this.securityContext = securityContext;
     }
 
-    //@Path("/{transaction_id}")
-    //public Class<TransactionResource> transactionResource() {return TransactionResource.class;}
+    @Path("/{transaction_id}")
+    public Class<TransactionResource> transactionResource() {return TransactionResource.class;}
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
     @Path("/search")
