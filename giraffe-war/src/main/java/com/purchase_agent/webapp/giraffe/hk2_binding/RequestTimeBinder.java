@@ -6,23 +6,14 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.joda.time.DateTime;
 
-import javax.inject.Inject;
-
 /**
  * Created by lukez on 3/9/17.
  */
 public class RequestTimeBinder extends AbstractBinder {
     public static class RequestTimeFactory implements Factory<DateTime> {
-        private DateTime requestTime;
-
-        @Inject
-        public RequestTimeFactory() {
-            this.requestTime = DateTime.now();
-        }
-
         @Override
         public DateTime provide() {
-            return this.requestTime;
+            return DateTime.now();
         }
 
         @Override
@@ -32,6 +23,6 @@ public class RequestTimeBinder extends AbstractBinder {
 
     @Override
     public void configure() {
-        bind(RequestTimeFactory.class).to(DateTime.class).qualifiedBy(new RequestTime.Impl()).in(RequestScoped.class);
+        bindFactory(RequestTimeFactory.class).to(DateTime.class).qualifiedBy(new RequestTime.Impl()).in(RequestScoped.class);
     }
 }

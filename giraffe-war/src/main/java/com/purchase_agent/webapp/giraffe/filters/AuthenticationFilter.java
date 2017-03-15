@@ -46,6 +46,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Inject
     public AuthenticationFilter(final UserAuthModelHandler userAuthModelHandler,
                                 @RequestTime final javax.inject.Provider<DateTime> now) {
+        super();
         this.authModelHandler = userAuthModelHandler;
         this.now = now;
     }
