@@ -3,7 +3,6 @@ package com.purchase_agent.webapp.giraffe.hk2_binding;
 import com.purchase_agent.webapp.giraffe.utils.PasswordValidator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.api.Factory;
-import org.glassfish.jersey.process.internal.RequestScoped;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

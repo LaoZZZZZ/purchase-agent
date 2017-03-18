@@ -19,7 +19,7 @@ public class UserDao {
     public UserDao() {
     }
 
-    Key<User> key(final String username) {
+    public Key<User> key(final String username) {
         return com.googlecode.objectify.Key.create(User.class, username);
     }
 
