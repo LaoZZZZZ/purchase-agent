@@ -3,6 +3,7 @@ package com.purchase_agent.webapp.giraffe.objectify_entity;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Transaction {
     private DateTime lastModificationTime;
 
     @Index
-    private double moneyAmount;
+    private MoneyAmount moneyAmount;
 
     @Index
     private String saler;
@@ -71,11 +72,11 @@ public class Transaction {
         this.lastModificationTime = lastModificationTime;
     }
 
-    public double getMoneyAmount() {
+    public MoneyAmount getMoneyAmount() {
         return moneyAmount;
     }
 
-    public void setMoneyAmount(final double moneyAmount) {
+    public void setMoneyAmount(final MoneyAmount moneyAmount) {
         this.moneyAmount = moneyAmount;
     }
 
