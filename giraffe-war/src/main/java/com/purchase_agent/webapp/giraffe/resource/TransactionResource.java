@@ -1,6 +1,6 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
-import com.google.appengine.repackaged.com.google.common.base.Strings;
+import com.google.common.base.Strings;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
@@ -10,7 +10,9 @@ import org.joda.time.DateTime;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 import java.util.logging.Logger;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 3/9/17.
  */
@@ -49,7 +52,7 @@ public class TransactionResource {
     public Response getTransaction() {
         if (!securityContext.isUserInRole(Roles.USER) && !securityContext.isUserInRole(Roles.ADMIN)) {
             logger.warning("unauthorized user when getting transactions");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         final Transaction transaction = this.transactionDao.get().transactinoId(transactionId);
@@ -63,6 +66,35 @@ public class TransactionResource {
         }
     }
 
+    // Mainly update the status or the monetary amount
+    @RolesAllowed({Roles.USER, Roles.ADMIN})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    public Response updateTransaction(final com.purchase_agent.webapp.giraffe.mediatype.Transaction transaction) {
+        if (!securityContext.isUserInRole(Roles.USER) && !securityContext.isUserInRole(Roles.ADMIN)) {
+            logger.warning("unauthorized user when getting transactions");
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        final Transaction persisted = this.transactionDao.get().transactinoId(transactionId);
+        // TODO(lukez): Check the user id matches the saler id in the transaction.
+        if (persisted == null || persisted.isDeleted()) {
+            logger.info("cant not find transaction " + this.transactionId);
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } else {
+            if (transaction.getStatus() != null) {
+                persisted.setStatus(transaction.getStatus());
+            }
+
+            if (transaction.getMoneyAmount() != null) {
+                persisted.setMoneyAmount(transaction.getMoneyAmount());
+            }
+            ofy().save().entity(persisted).now();
+            persisted.setLastModificationTime(this.now.get());
+
+            return Response.ok().build();
+        }
+    }
     // Transfer the persisted transaction to medatype.
     private com.purchase_agent.webapp.giraffe.mediatype.Transaction toWireModel(final Transaction transaction) {
         final com.purchase_agent.webapp.giraffe.mediatype.Transaction toReturn =

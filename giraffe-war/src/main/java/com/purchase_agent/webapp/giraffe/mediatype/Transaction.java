@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.mediatype;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;
 import java.util.List;
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class Transaction {
     private String transactionId;
     private com.purchase_agent.webapp.giraffe.objectify_entity.Transaction.Status status;
-    private double moneyAmount;
+    private MoneyAmount moneyAmount;
     private List<String> lineItemIds;
     private DateTime creationTime;
     private DateTime lastModificationTime;
@@ -38,11 +39,11 @@ public class Transaction {
     }
 
     @JsonProperty("money_amount")
-    public double getMoneyAmount() {
+    public MoneyAmount getMoneyAmount() {
         return moneyAmount;
     }
 
-    public void setMoneyAmount(double moneyAmount) {
+    public void setMoneyAmount(MoneyAmount moneyAmount) {
         this.moneyAmount = moneyAmount;
     }
 
