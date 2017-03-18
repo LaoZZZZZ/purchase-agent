@@ -1,9 +1,11 @@
-package com.purchase_agent.webapp.giraffe.persistence;
+package com.purchase_agent.webapp.giraffe.persistence.persistence;
 
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.ObjectifyService;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
 import com.googlecode.objectify.VoidWork;
+import com.purchase_agent.webapp.giraffe.persistence.ObjectifyBaseTest;
+import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 import org.joda.time.DateTime;
 
 import org.junit.Assert;
@@ -16,7 +18,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *
  * Created by lukez on 2/25/17.
  */
-public class UserDaoTest extends ObjectifyBaseTest{
+public class UserDaoTest extends ObjectifyBaseTest {
     private UserDao userDao = new UserDao();
 
     private static final DateTime CREATION_TIME = DateTime.parse("2016-11-11T00:00:00.000Z");
