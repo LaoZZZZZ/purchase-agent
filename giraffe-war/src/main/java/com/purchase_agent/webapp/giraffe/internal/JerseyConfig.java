@@ -35,7 +35,6 @@ public class JerseyConfig extends ResourceConfig {
         for (Class<?> clazz : Entities.entities) {
             ObjectifyService.register(clazz);
         }
-
     }
 
     public JerseyConfig() {
