@@ -15,7 +15,6 @@ import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
-//import com.purchase_agent.webapp.giraffe.resource.TransactionResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -25,7 +24,6 @@ import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
             LineItemsResource.class,
-            //TransactionResource.class,
             TransactionsResource.class,
             UserResource.class
     };

@@ -86,6 +86,17 @@
             <artifactId>google-oauth-client</artifactId>
             <version>${google.api.client.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.api.client</groupId>
+            <artifactId>google-api-client-auth-oauth2</artifactId>
+            <version>${google.api.client.auth.oath2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.api.client</groupId>
+            <artifactId>google-api-client-json</artifactId>
+            <version>${google.api.client.auth.oath2.version}</version>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * Created by lukez on 3/17/17.
  */
 public class MoneyAmount {
-    private BigDecimal amount;
+    private String amount;
     private Currency currency;
     private static int precision = 2;
 
@@ -17,13 +17,13 @@ public class MoneyAmount {
     }
 
     @JsonProperty("amount")
-    public BigDecimal getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(final BigDecimal amount) {
         amount.setScale(precision, BigDecimal.ROUND_DOWN);
-        this.amount = amount;
+        this.amount = amount.toPlainString();
     }
 
     public Currency getCurrency() {
