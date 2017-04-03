@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -32,6 +33,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @Path("/transactions")
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionsResource {
+    private static final Logger logger = Logger.getLogger(TransactionsResource.class.getName());
+
     private final Provider<DateTime> now;
     private final SecurityContext securityContext;
     private final Links links;
@@ -60,6 +63,12 @@ public class TransactionsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
     public Response createTransaction(final Transaction transaction) {
+        if (!this.securityContext.isUserInRole(Roles.USER)) {
+            logger.warning("Unauthorized user to create transaction!");
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        final UserAuthModel authModel = getUserInfo();
+        logger.info("Start to create a new transaction for user " + authModel.getUsername());
         com.purchase_agent.webapp.giraffe.objectify_entity.Transaction persisted = new
                 com.purchase_agent.webapp.giraffe.objectify_entity.Transaction(UUID.randomUUID().toString());
         persisted.setCreationTime(this.now.get());
@@ -69,10 +78,11 @@ public class TransactionsResource {
         persisted.setItemIds(transaction.getLineItemIds());
         persisted.setCustomerId(transaction.getCustomerId());
         persisted.setLastModificationTime(this.now.get());
-        persisted.setSaler(getUserInfo().getUsername());
+        persisted.setSaler(authModel.getUsername());
         persisted.setNumOfItems(ImmutableSet.copyOf(transaction.getLineItemIds()).size());
 
         ofy().save().entity(persisted).now();
+        logger.info("Successfully created transaction " + persisted.getId() + ".");
         return Response.created(links.forTransactionCreation(persisted.getId())).build();
     }
 

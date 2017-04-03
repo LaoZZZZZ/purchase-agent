@@ -1,4 +1,5 @@
 #!/bin/bash
-echo "activate user."
+echo "create single transaction."
 
-curl -i -X GET -H "authorization: eyJ1c2VybmFtZSI6InRlc3QiLCJwYXNzd29yZCI6IjEyMzQiLCJleHBpcmVfdGltZSI6IjIwMTctMDMtMTNUMjE6NTM6MTYuMDU1WiIsImF1dGhfdGlja2V0IjoiZDQxMjExZDQtM2VhZi00YmU2LTk4MWQtZGYzMTI0MDlmNTY2In0=" -d "" 'https://purchase-agent.appspot.com/transactions/94f44b63-8f8d-4c49-a9fc-8e7a3cd84c21'
+curl -i -X POST -H "Content-Type: application/json" -H "authorization: eyJ1c2VybmFtZSI6InRlc3QiLCJwYXNzd29yZCI6IjEyMzQiLCJleHBpcmVfdGltZSI6IjIwMTctMDQtMDNUMjI6MTA6MjguNjEyWiIsImF1dGhfdGlja2V0IjoiMmU2YzRjNGQtMDhiOS00MjEwLWFlMzItY2RkOWY4OTI0NjkwIn0=" -d '{"status":"PAID", "transaction_id":"","customer_id":"123", "money_amount":{"amount":"200.00"},"line_item_ids":["item_1","item_2"]}' 'https://purchase-agent.appspot.com/transactions'
+
