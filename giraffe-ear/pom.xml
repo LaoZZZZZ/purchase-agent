@@ -38,7 +38,7 @@
       <groupId>com.purchase-agent.webapp</groupId>
       <artifactId>giraffe-war</artifactId>
       <version>1.0</version>
-      <category>war</category>
+      <type>war</type>
     </dependency>
   </dependencies>
 </project>

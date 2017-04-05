@@ -28,14 +28,14 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${spring.version}</version>
-                <category>pom</category>
+                <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey</groupId>
                 <artifactId>jersey-bom</artifactId>
                 <version>${jersey.version}</version>
-                <category>pom</category>
+                <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
