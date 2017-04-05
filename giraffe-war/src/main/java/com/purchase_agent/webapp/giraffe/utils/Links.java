@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.utils;
 
 import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
+import com.purchase_agent.webapp.giraffe.resource.TransactionResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
 
 import javax.inject.Inject;
@@ -29,7 +30,12 @@ public class Links {
 
     public URI forLineItemCreation(final String lineItemId) {
         return this.uriInfo.getBaseUriBuilder().fromResource(LineItemResource.class)
-                .resolveTemplate("lineItemId", lineItemId)
+                .resolveTemplate("lineItemId", lineItemId).build();
+    }
+
+    public URI forTransactionCreation(final String transactionId) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(TransactionResource.class)
+                .resolveTemplate("transaction_id", transactionId)
                 .build();
     }
 }

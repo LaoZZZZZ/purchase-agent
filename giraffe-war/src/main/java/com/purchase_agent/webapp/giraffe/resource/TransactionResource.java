@@ -1,6 +1,5 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
-import com.google.common.base.Strings;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
@@ -91,7 +90,6 @@ public class TransactionResource {
             }
             ofy().save().entity(persisted).now();
             persisted.setLastModificationTime(this.now.get());
-
             return Response.ok().build();
         }
     }

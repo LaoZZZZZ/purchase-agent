@@ -15,6 +15,7 @@ public class Transaction {
     private List<String> lineItemIds;
     private DateTime creationTime;
     private DateTime lastModificationTime;
+    private long customerId;
 
     public Transaction() {
 
@@ -65,12 +66,22 @@ public class Transaction {
         this.creationTime = creationTime;
     }
 
+    @JsonProperty("laste_modification_time")
     public DateTime getLastModificationTime() {
         return lastModificationTime;
     }
 
     public void setLastModificationTime(final DateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
+    }
+
+    @JsonProperty("customer_id")
+    public long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(final long customerId) {
+        this.customerId = customerId;
     }
 }
 

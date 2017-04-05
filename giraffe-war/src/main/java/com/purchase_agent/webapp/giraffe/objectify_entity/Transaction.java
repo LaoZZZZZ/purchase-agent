@@ -48,6 +48,13 @@ public class Transaction {
     @Index
     private DateTime creationTime;
 
+    public Transaction() {
+    }
+
+    public Transaction(final String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

@@ -104,6 +104,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 Principal principal = new UserPrincipal(userAuthModel);
                 requestContext.setSecurityContext(PASecurityContext.createSecurityContext(
                         ImmutableSet.copyOf(user.getRoles()), principal, PASecurityContext.Schema.WHITE_LISTED));
+                logger.info("The user is white listed");
             }
         } else {
             logger.info("authToken:" + authToken);
@@ -133,6 +134,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 Principal principal = new UserPrincipal(userAuthModel);
                 requestContext.setSecurityContext(PASecurityContext.createSecurityContext(
                         ImmutableSet.of(Roles.USER), principal, PASecurityContext.Schema.TOKEN));
+                logger.info("The user has valid token!");
             } catch (final Exception exp) {
                 logger.severe("can not decrypt the auth token!" + authToken);
                 throw new WebApplicationException(Status.UNAUTHORIZED);

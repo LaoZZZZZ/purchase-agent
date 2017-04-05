@@ -12,7 +12,6 @@ import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import com.purchase_agent.webapp.giraffe.utils.Currency;
 import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.UUID;
