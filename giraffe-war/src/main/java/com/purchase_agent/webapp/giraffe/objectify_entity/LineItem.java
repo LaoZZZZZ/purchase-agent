@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;
 /**
  * Created by lukez on 2/24/17.
@@ -15,7 +16,7 @@ public class LineItem {
         SOLD,
     }
 
-    public static enum Type {
+    public static enum Category {
         BABY_FOOD,
         TOY,
         BAG,
@@ -31,12 +32,12 @@ public class LineItem {
     @Index
     private String transactionId;
 
-    private double originalPrice;
+    private MoneyAmount originalPrice;
 
-    private double purchasePrice;
+    private MoneyAmount purchasePrice;
 
     @Index
-    private Type type;
+    private Category category;
 
     @Index
     private String brand;
@@ -63,19 +64,19 @@ public class LineItem {
         this.transactionId = transactionId;
     }
 
-    public double getOriginalPrice() {
+    public MoneyAmount getOriginalPrice() {
         return originalPrice;
     }
 
-    public void setOriginalPrice(final double originalPrice) {
+    public void setOriginalPrice(final MoneyAmount originalPrice) {
         this.originalPrice = originalPrice;
     }
 
-    public double getPurchasePrice() {
+    public MoneyAmount getPurchasePrice() {
         return purchasePrice;
     }
 
-    public void setPurchasePrice(final double purchasePrice) {
+    public void setPurchasePrice(final MoneyAmount purchasePrice) {
         this.purchasePrice = purchasePrice;
     }
 
@@ -87,12 +88,12 @@ public class LineItem {
         this.purchaseTime = purchaseTime;
     }
 
-    public Type getType() {
-        return type;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setType(final Type type) {
-        this.type = type;
+    public void setCategory(final Category category) {
+        this.category = category;
     }
 
     public String getBrand() {

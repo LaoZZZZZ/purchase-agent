@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.utils;
 
+import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
 
@@ -19,12 +20,17 @@ public class Links {
         this.uriInfo = uriInfo;
     }
 
-    public  URI forUserCreation(final String userId, final String activationToken) {
+    public URI forUserCreation(final String userId, final String activationToken) {
         return this.uriInfo.getBaseUriBuilder().fromResource(UserResource.class)
                 .path("/activate/{user_id}")
                 .resolveTemplate("user_id", userId)
                 .queryParam("activation_token", activationToken)
                 .build();
+    }
+
+    public URI forLineItemCreation(final String lineItemId) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(LineItemResource.class)
+                .resolveTemplate("lineItemId", lineItemId).build();
     }
 
     public URI forTransactionCreation(final String transactionId) {
