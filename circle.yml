@@ -3,10 +3,13 @@ machine:
     version:openjdk7
 compile:
   override:
-    mvn compile
+    - mvn compile
 test:
   override:
-    mvn test
+    - mkdir -p $CIRCLE_TEST_REPORTS/cucumber
+    - bundle exec cucumber --format junit --out $CIRCLE_TEST_REPORTS/cucumber/junit.xml
+    - mvn test
+
 deployment:
   master:
     branch: master
