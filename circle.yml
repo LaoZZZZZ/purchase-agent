@@ -1,5 +1,18 @@
 general:
-    build_dir:giraffe-war
+  build_dir: giraffe-war
 machine:
-	java:
-		version:openjdk7
+  java:
+    version:openjdk7
+compile:
+  override:
+    - mvn compile
+test:
+  override:
+    - mvn test
+deployment:
+  master:
+    branch: master
+    owner: circleci
+    commands:
+      - mvn clean install
+      - ./updateAppengine.sh
