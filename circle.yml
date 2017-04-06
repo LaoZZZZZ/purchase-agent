@@ -1,6 +1,6 @@
 machine:
-	java:
-		version:openjdk7
+  java:
+    version:openjdk7
 compile:
   override:
     mvn compile
