@@ -6,13 +6,9 @@ machine:
 compile:
   override:
     - mvn compile
-dependencies:
-  override:
-    -
 test:
   override:
     - mvn test
-
 deployment:
   master:
     branch: master
