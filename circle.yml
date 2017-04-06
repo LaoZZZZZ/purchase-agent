@@ -1,5 +1,5 @@
 general:
-  build_dir: giraff-war
+  build_dir: giraffe-war
 machine:
   java:
     version:openjdk7
