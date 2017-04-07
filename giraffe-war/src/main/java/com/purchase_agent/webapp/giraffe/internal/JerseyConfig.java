@@ -13,6 +13,7 @@ import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthResponseFilterBinde
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.persistence.UserDao;
+import com.purchase_agent.webapp.giraffe.resource.ExpressCompaniesResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
@@ -25,7 +26,8 @@ public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
             LineItemsResource.class,
             TransactionsResource.class,
-            UserResource.class
+            UserResource.class,
+            ExpressCompaniesResource.class,
     };
 
     static {
