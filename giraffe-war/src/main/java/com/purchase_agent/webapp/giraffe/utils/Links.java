@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.utils;
 
+import com.purchase_agent.webapp.giraffe.resource.ExpressCompanyResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
@@ -36,6 +37,12 @@ public class Links {
     public URI forTransactionCreation(final String transactionId) {
         return this.uriInfo.getBaseUriBuilder().fromResource(TransactionResource.class)
                 .resolveTemplate("transaction_id", transactionId)
+                .build();
+    }
+
+    public URI forExpressCompany(final String companyId) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(ExpressCompanyResource.class)
+                .resolveTemplate("companyId", companyId)
                 .build();
     }
 }

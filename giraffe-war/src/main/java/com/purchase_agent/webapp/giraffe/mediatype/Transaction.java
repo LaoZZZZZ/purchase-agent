@@ -18,7 +18,6 @@ public class Transaction {
     private long customerId;
 
     public Transaction() {
-
     }
 
     @JsonProperty("transaction_id")
