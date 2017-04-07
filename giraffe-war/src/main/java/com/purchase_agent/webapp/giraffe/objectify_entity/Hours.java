@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.objectify_entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 /**
  * Created by lukez on 2/18/17.
@@ -21,6 +22,7 @@ public class Hours {
     public Hours() {
     }
 
+    @JsonProperty("day")
     public Day getDay() {
         return day;
     }
@@ -29,6 +31,7 @@ public class Hours {
         this.day = day;
     }
 
+    @JsonProperty("start")
     public DateTime getStart() {
         return start;
     }
@@ -37,6 +40,7 @@ public class Hours {
         this.start = start;
     }
 
+    @JsonProperty("end")
     public DateTime getEnd() {
         return end;
     }

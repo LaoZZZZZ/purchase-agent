@@ -3,7 +3,9 @@ package com.purchase_agent.webapp.giraffe.objectify_entity;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import org.joda.time.DateTime;
 
+import javax.inject.Inject;
 import java.util.List;
 /**
  * Created by lukez on 2/15/17.
@@ -16,7 +18,7 @@ public class ExpressCompany {
     }
 
     @Id
-    private long id;
+    private String id;
 
     @Index
     private String companyName;
@@ -33,13 +35,16 @@ public class ExpressCompany {
 
     private List<Hours> hours;
 
-    ExpressCompany() {
+    @Index
+    private DateTime creationTime;
+
+    public ExpressCompany() {
     }
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(final long id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -89,5 +94,13 @@ public class ExpressCompany {
 
     public void setHours(final List<Hours> hours) {
         this.hours = hours;
+    }
+
+    public DateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(final DateTime creationTime) {
+        this.creationTime = creationTime;
     }
 }
