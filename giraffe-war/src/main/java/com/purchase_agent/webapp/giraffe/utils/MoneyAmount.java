@@ -13,7 +13,6 @@ public class MoneyAmount {
     private static int precision = 2;
 
     public MoneyAmount() {
-
     }
 
     @JsonProperty("amount")

@@ -1,13 +1,16 @@
 package com.purchase_agent.webapp.giraffe.persistence;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
-import com.google.appengine.repackaged.com.google.common.base.Strings;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.cmd.Query;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Collection;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -44,34 +47,40 @@ public class TransactionDao {
         return Key.create(Transaction.class, transactionId);
     }
 
-    Search search() {
+    public Search search() {
         return new SearchImpl();
     }
 
-    private static interface Search {
-        Search customId(final String customId);
+    public static interface Search {
+        Search customId(final long customId);
         Search lastModificationTime(final DateTime lastModified);
         Search saler(final String salerId);
-        Search itemId(final String itemId);
         Search status(final Transaction.Status status);
-        QueryResultIterator<Transaction> execute();
+        Search isDeleted(final boolean deleted);
+        Search next(final String encodedCursor);
+        Search limit(final int limit);
+        Result execute();
+
+        public static class Result {
+            public List<Transaction> transactions;
+            public String encodedCursor;
+        }
     }
 
     private static class SearchImpl implements Search {
         private Query<Transaction> query;
         private int numResult;
+
         private static int CHUNK = 1000;
         private static int PAGE_SIZE = 1000;
 
         public SearchImpl() {
             this.query = ofy().load().type(Transaction.class);
-            this.numResult = PAGE_SIZE;
+            numResult = 1000;
         }
 
-        public Search customId(final String customId) {
-            if (!Strings.isNullOrEmpty(customId)) {
-                this.query = this.query.filter("customerId", customId);
-            }
+        public Search customId(final long customId) {
+            this.query = this.query.filter("customerId", customId);
             return this;
         }
 
@@ -89,13 +98,6 @@ public class TransactionDao {
             return this;
         }
 
-        public Search itemId(final String itemId) {
-            if (!Strings.isNullOrEmpty(itemId)) {
-                this.query = query.filter("itemId", itemId);
-            }
-            return this;
-        }
-
         public Search status(final Transaction.Status status) {
             if (status != null) {
                 this.query = query.filter("status", status);
@@ -103,10 +105,37 @@ public class TransactionDao {
             return this;
         }
 
+        public Search isDeleted(final boolean deleted) {
+            this.query = query.filter("isDeleted", deleted);
+            return this;
+        }
+
+        public Search limit(final int limit) {
+            numResult = limit;
+            return this;
+        }
+
         // TODO(lukez): add pagination logic.
-        public QueryResultIterator<Transaction> execute() {
-            query = this.query.chunk(CHUNK).limit(numResult + 1);
-            return this.query.iterator();
+        public Result execute() {
+            query = this.query.limit(numResult + 1).chunk(numResult + 1);
+            QueryResultIterator<Transaction> iteratorResult = this.query.iterator();
+            int i = 0;
+            List<Transaction> transactions = new ArrayList<>();
+            while(iteratorResult.hasNext() && i++ < numResult) {
+                transactions.add(iteratorResult.next());
+            }
+            Result toReturn = new Result();
+            toReturn.transactions = transactions;
+            if (iteratorResult.hasNext()) {
+                toReturn.encodedCursor = iteratorResult.getCursor().toWebSafeString();
+            }
+            return toReturn;
+        }
+
+        public Search next(final String encodedCursor) {
+            if (!Strings.isNullOrEmpty(encodedCursor))
+                query = this.query.startAt(Cursor.fromWebSafeString(encodedCursor));
+            return this;
         }
     }
 }

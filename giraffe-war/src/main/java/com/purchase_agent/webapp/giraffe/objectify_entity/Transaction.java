@@ -28,13 +28,11 @@ public class Transaction {
     @Index
     private DateTime lastModificationTime;
 
-    @Index
     private MoneyAmount moneyAmount;
 
     @Index
     private String saler;
 
-    @Index
     private List<String> itemIds;
 
     private int numOfItems;
