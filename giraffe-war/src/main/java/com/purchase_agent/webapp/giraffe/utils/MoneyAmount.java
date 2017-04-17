@@ -15,6 +15,11 @@ public class MoneyAmount {
     public MoneyAmount() {
     }
 
+    public MoneyAmount(final String amount, final Currency currency) {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
     @JsonProperty("amount")
     public String getAmount() {
         return amount;
@@ -31,5 +36,23 @@ public class MoneyAmount {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MoneyAmount that = (MoneyAmount) o;
+
+        if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
+        return currency == that.currency;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = amount != null ? amount.hashCode() : 0;
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
+        return result;
     }
 }

@@ -5,7 +5,6 @@ import com.google.appengine.api.datastore.QueryResultIterator;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.cmd.Query;
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
-import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
@@ -19,7 +18,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  */
 public class LineItemDao {
     @Inject
-    LineItemDao() {
+    public LineItemDao() {
     }
 
     public static interface Get {
@@ -47,11 +46,11 @@ public class LineItemDao {
         return new GetImpl();
     }
 
-    Search search() {
+    public Search search() {
         return new SearchImpl();
     }
 
-    private static interface Search {
+    public static interface Search {
         Search transactionId(final String transactionId);
         Search category(final LineItem.Category category);
         Search brand(final String brand);
@@ -62,7 +61,7 @@ public class LineItemDao {
         Search next(final String encodedCursor);
 
         public static class Result {
-            public List<LineItem> transactions;
+            public List<LineItem> lineItems;
             public String encodedCursor;
         }
     }
@@ -128,7 +127,7 @@ public class LineItemDao {
                 transactions.add(iteratorResult.next());
             }
             Search.Result toReturn = new Search.Result();
-            toReturn.transactions = transactions;
+            toReturn.lineItems = transactions;
             if (iteratorResult.hasNext()) {
                 toReturn.encodedCursor = iteratorResult.getCursor().toWebSafeString();
             }

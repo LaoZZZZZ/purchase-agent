@@ -11,6 +11,8 @@ import com.purchase_agent.webapp.giraffe.hk2_binding.SensitiveInfoFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthModelHandlerBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthResponseFilterBinder;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
+import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
+import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 import com.purchase_agent.webapp.giraffe.resource.ExpressCompaniesResource;
@@ -63,6 +65,7 @@ public class JerseyConfig extends ResourceConfig {
             // DAO class
             bindAsContract(TransactionDao.class);
             bindAsContract(UserDao.class);
+            bindAsContract(LineItemDao.class);
         }
     }
 }

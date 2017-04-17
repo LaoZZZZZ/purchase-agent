@@ -31,7 +31,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 3/9/17.
  */
-@Path("/transactions")
+@Path("/lineItems")
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionsResource {
     private static final Logger logger = Logger.getLogger(TransactionsResource.class.getName());
