@@ -1,7 +1,7 @@
 package com.purchase_agent.webapp.giraffe.persistence;
 
 import com.google.appengine.api.datastore.QueryResultIterator;
-import com.google.appengine.repackaged.com.google.common.base.Strings;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.cmd.Query;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
