@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.persistence;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.cmd.Query;
@@ -8,7 +9,10 @@ import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 4/14/17.
@@ -52,8 +56,15 @@ public class LineItemDao {
         Search category(final LineItem.Category category);
         Search brand(final String brand);
         Search purchaseTime(final DateTime purchaseTime);
+        Search limit(final int limit);
         Search status(final LineItem.Status status);
-        QueryResultIterator<LineItem> execute();
+        Result execute();
+        Search next(final String encodedCursor);
+
+        public static class Result {
+            public List<LineItem> transactions;
+            public String encodedCursor;
+        }
     }
 
     private static class SearchImpl implements Search {
@@ -102,10 +113,32 @@ public class LineItemDao {
             return this;
         }
 
+        public Search limit(final int limit) {
+            numResult = limit;
+            return this;
+        }
+
         // TODO(lukez): add pagination logic.
-        public QueryResultIterator<LineItem> execute() {
-            query = this.query.chunk(CHUNK).limit(numResult + 1);
-            return this.query.iterator();
+        public Result execute() {
+            query = this.query.limit(numResult + 1).chunk(numResult + 1);
+            QueryResultIterator<LineItem> iteratorResult = this.query.iterator();
+            int i = 0;
+            List<LineItem> transactions = new ArrayList<>();
+            while(iteratorResult.hasNext() && i++ < numResult) {
+                transactions.add(iteratorResult.next());
+            }
+            Search.Result toReturn = new Search.Result();
+            toReturn.transactions = transactions;
+            if (iteratorResult.hasNext()) {
+                toReturn.encodedCursor = iteratorResult.getCursor().toWebSafeString();
+            }
+            return toReturn;
+        }
+
+        public Search next(final String encodedCursor) {
+            if (!Strings.isNullOrEmpty(encodedCursor))
+                query = this.query.startAt(Cursor.fromWebSafeString(encodedCursor));
+            return this;
         }
     }
 }
