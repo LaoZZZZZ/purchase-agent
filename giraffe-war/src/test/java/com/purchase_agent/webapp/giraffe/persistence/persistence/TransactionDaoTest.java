@@ -29,60 +29,51 @@ public class TransactionDaoTest extends ObjectifyBaseTest {
     private static final long CUSTOMER_ID = 123L;
     private static final List<String> ITEM_IDS = ImmutableList.of("item_1", "item_2", "item_3");
 
-//    @Test
-//    public void test_get_success() {
-//        Transaction created = createAndPersistTransaction();
-//        Transaction retrieved = this.transactionDao.get().transactinoId(created.getId());
-//        validateResult(created, retrieved);
-//    }
-//
-//    @Test
-//    public void test_get_notFound() {
-//        Transaction retrieved = this.transactionDao.get().transactinoId("not_found");
-//        Assert.assertNull(retrieved);
-//    }
-//
-//    @Test
-//    public void test_search_success() {
-//        Transaction created = createAndPersistTransaction();
-//
-//        // search by modification time
-//        QueryResultIterator<Transaction> retrieved =
-//                this.transactionDao.search().lastModificationTime(created.getLastModificationTime()).execute();
-//        Assert.assertTrue("Expecting one result", retrieved.hasNext());
-//        while(retrieved.hasNext()) {
-//            validateResult(created, retrieved.next());
-//        }
-//
-//        // search by saler
-//        retrieved = this.transactionDao.search().saler(created.getSaler()).execute();
-//        Assert.assertTrue("Expecting one result", retrieved.hasNext());
-//        while(retrieved.hasNext()) {
-//            validateResult(created, retrieved.next());
-//        }
-//
-//        //search by customer id
-//        retrieved = this.transactionDao.search().customId(created.getCustomerId()).execute();
-//        Assert.assertTrue("Expecting one result", retrieved.hasNext());
-//        while(retrieved.hasNext()) {
-//            validateResult(created, retrieved.next());
-//        }
-//
-//        // search by is deleted
-//        retrieved = this.transactionDao.search().isDeleted(created.isDeleted()).execute();
-//        Assert.assertTrue("Expecting one result", retrieved.hasNext());
-//        while(retrieved.hasNext()) {
-//            validateResult(created, retrieved.next());
-//        }
-//
-//        // search by status
-//        retrieved = this.transactionDao.search().status(created.getStatus()).execute();
-//        Assert.assertTrue("Expecting one result", retrieved.hasNext());
-//        while(retrieved.hasNext()) {
-//            validateResult(created, retrieved.next());
-//        }
-//
-//    }
+    @Test
+    public void test_get_success() {
+        Transaction created = createAndPersistTransaction();
+        Transaction retrieved = this.transactionDao.get().transactinoId(created.getId());
+        validateResult(created, retrieved);
+    }
+
+    @Test
+    public void test_get_notFound() {
+        Transaction retrieved = this.transactionDao.get().transactinoId("not_found");
+        Assert.assertNull(retrieved);
+    }
+
+    @Test
+    public void test_search_success() {
+        Transaction created = createAndPersistTransaction();
+
+        // search by modification time
+        TransactionDao.Search.Result retrieved =
+                this.transactionDao.search().lastModificationTime(created.getLastModificationTime()).execute();
+        Assert.assertEquals("Expecting one result", 1, retrieved.transactions.size());
+        validateResult(created, retrieved.transactions.get(0));
+
+
+        // search by saler
+        retrieved = this.transactionDao.search().saler(created.getSaler()).execute();
+        Assert.assertEquals("Expecting one result", 1, retrieved.transactions.size());
+        validateResult(created, retrieved.transactions.get(0));
+
+        //search by customer id
+        retrieved = this.transactionDao.search().customId(created.getCustomerId()).execute();
+        Assert.assertEquals("Expecting one result", 1, retrieved.transactions.size());
+        validateResult(created, retrieved.transactions.get(0));
+
+        // search by is deleted
+        retrieved = this.transactionDao.search().isDeleted(created.isDeleted()).execute();
+        Assert.assertEquals("Expecting one result", 1, retrieved.transactions.size());
+        validateResult(created, retrieved.transactions.get(0));
+
+
+        // search by status
+        retrieved = this.transactionDao.search().status(created.getStatus()).execute();
+        Assert.assertEquals("Expecting one result", 1, retrieved.transactions.size());
+        validateResult(created, retrieved.transactions.get(0));
+    }
 
     @Test
     public void test_search_pagination_success() {
