@@ -94,7 +94,7 @@ public class TransactionResource {
         }
     }
     // Transfer the persisted transaction to medatype.
-    private com.purchase_agent.webapp.giraffe.mediatype.Transaction toWireModel(final Transaction transaction) {
+    public static com.purchase_agent.webapp.giraffe.mediatype.Transaction toWireModel(final Transaction transaction) {
         final com.purchase_agent.webapp.giraffe.mediatype.Transaction toReturn =
                 new com.purchase_agent.webapp.giraffe.mediatype.Transaction();
         toReturn.setLineItemIds(transaction.getItemIds());

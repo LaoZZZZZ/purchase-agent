@@ -7,6 +7,8 @@ import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
 import com.purchase_agent.webapp.giraffe.authentication.UserPrincipal;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.mediatype.Transaction;
+import com.purchase_agent.webapp.giraffe.mediatype.Transactions;
+import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import org.joda.time.DateTime;
 
@@ -18,13 +20,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Logger;
-
+import java.util.List;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
@@ -38,14 +42,17 @@ public class TransactionsResource {
     private final Provider<DateTime> now;
     private final SecurityContext securityContext;
     private final Links links;
+    private final TransactionDao transactionDao;
 
     @Inject
     public TransactionsResource(@RequestTime final Provider<DateTime> now,
                                 @Context final SecurityContext securityContext,
-                                final Links links) {
+                                final Links links,
+                                final TransactionDao transactionDao) {
         this.now = now;
         this.securityContext = securityContext;
         this.links = links;
+        this.transactionDao = transactionDao;
     }
 
     @Path("/{transaction_id}")
@@ -54,9 +61,39 @@ public class TransactionsResource {
     @RolesAllowed({Roles.USER, Roles.ADMIN})
     @Path("/search")
     @GET
-    public Response search() {
+    public Response search(@QueryParam("customerId") final long customerId,
+                           @QueryParam("saler") final String saler,
+                           @QueryParam("status") final com.purchase_agent.webapp.giraffe.objectify_entity.Transaction.Status status,
+                           @QueryParam("next") final String next,
+                           @QueryParam("limit") final int limit,
+                           @QueryParam("lasteModificationTime") final DateTime lastModificationTime) {
         // TODO(lukez): fill in the implementation.
-        return Response.ok().build();
+        if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
+            logger.warning("Unauthorized user to create transaction!");
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        final TransactionDao.Search.Result result = transactionDao
+                .search()
+                .customId(customerId)
+                .saler(saler)
+                .status(status)
+                .lastModificationTime(lastModificationTime)
+                .limit(limit)
+                .next(next).execute();
+        UserAuthModel userAuthModel = null;
+        if (securityContext.isUserInRole(Roles.USER)) {
+            userAuthModel = getUserInfo();
+        }
+        List<Transaction> transactionList = new ArrayList<>();
+        for (final com.purchase_agent.webapp.giraffe.objectify_entity.Transaction transaction : result.transactions) {
+            if (userAuthModel == null || transaction.getSaler().equals(userAuthModel.getUsername())) {
+                transactionList.add(TransactionResource.toWireModel(transaction));
+            }
+        }
+        Transactions transactions = new Transactions();
+        transactions.setTransactions(transactionList);
+        return Response.ok(transactions).build();
     }
 
     @RolesAllowed(Roles.USER)
