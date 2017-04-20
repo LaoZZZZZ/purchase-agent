@@ -34,7 +34,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 3/9/17.
  */
-@Path("/transactions")
+@Path("/transactions/")
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionsResource {
     private static final Logger logger = Logger.getLogger(TransactionsResource.class.getName());
@@ -55,19 +55,19 @@ public class TransactionsResource {
         this.transactionDao = transactionDao;
     }
 
-    @Path("/{transaction_id}")
+    @Path("single/{transactionId}")
     public Class<TransactionResource> transactionResource() {return TransactionResource.class;}
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
-    @Path("/search")
+    @Path("search")
+    @Produces(MediaType.APPLICATION_JSON)
     @GET
     public Response search(@QueryParam("customerId") final long customerId,
                            @QueryParam("saler") final String saler,
                            @QueryParam("status") final com.purchase_agent.webapp.giraffe.objectify_entity.Transaction.Status status,
                            @QueryParam("next") final String next,
                            @QueryParam("limit") final int limit,
-                           @QueryParam("lasteModificationTime") final DateTime lastModificationTime) {
-        // TODO(lukez): fill in the implementation.
+                           @QueryParam("lastModificationTime") final long lastModificationTime) {
         if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
             logger.warning("Unauthorized user to create transaction!");
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -78,7 +78,6 @@ public class TransactionsResource {
                 .customId(customerId)
                 .saler(saler)
                 .status(status)
-                .lastModificationTime(lastModificationTime)
                 .limit(limit)
                 .next(next).execute();
         UserAuthModel userAuthModel = null;
@@ -116,8 +115,11 @@ public class TransactionsResource {
         persisted.setCustomerId(transaction.getCustomerId());
         persisted.setLastModificationTime(this.now.get());
         persisted.setSaler(authModel.getUsername());
-        persisted.setNumOfItems(ImmutableSet.copyOf(transaction.getLineItemIds()).size());
-
+        if (transaction.getLineItemIds() == null) {
+            persisted.setNumOfItems(0);
+        } else {
+            persisted.setNumOfItems(ImmutableSet.copyOf(transaction.getLineItemIds()).size());
+        }
         ofy().save().entity(persisted).now();
         logger.info("Successfully created transaction " + persisted.getId() + ".");
         return Response.created(links.forTransactionCreation(persisted.getId())).build();

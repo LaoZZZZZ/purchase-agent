@@ -42,8 +42,8 @@ public class ExpressCompaniesResource {
         this.links = links;
     }
 
-    @Path("/{companyId")
-    Class<ExpressCompanyResource> getCompanyResource() {return ExpressCompanyResource.class;}
+    @Path("{companyId}")
+    public Class<ExpressCompanyResource> getCompanyResource() {return ExpressCompanyResource.class;}
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
     @POST

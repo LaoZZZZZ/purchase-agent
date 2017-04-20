@@ -44,7 +44,7 @@ public class LineItemsResource {
     }
 
     @Path("/{lineItemId}")
-    Class<LineItemResource> id() {return LineItemResource.class;}
+    public Class<LineItemResource> id() {return LineItemResource.class;}
 
     @Path("/search")
     @GET
