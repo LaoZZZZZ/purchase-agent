@@ -66,7 +66,7 @@ public class TransactionsResource {
                            @QueryParam("status") final com.purchase_agent.webapp.giraffe.objectify_entity.Transaction.Status status,
                            @QueryParam("next") final String next,
                            @QueryParam("limit") final int limit,
-                           @QueryParam("lasteModificationTime") final DateTime lastModificationTime) {
+                           @QueryParam("lastModificationTime") final DateTime lastModificationTime) {
         // TODO(lukez): fill in the implementation.
         if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
             logger.warning("Unauthorized user to create transaction!");
