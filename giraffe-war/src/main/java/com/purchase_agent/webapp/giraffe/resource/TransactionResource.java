@@ -25,7 +25,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 3/9/17.
  */
-@Path("transactions/{transaction_id}")
+@Path("transactions/single/{transactionId}")
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionResource {
     private static final Logger logger = Logger.getLogger(TransactionResource.class.getName());
@@ -36,7 +36,7 @@ public class TransactionResource {
     private final SecurityContext securityContext;
 
     @Inject
-    public TransactionResource(@PathParam("transaction_id") final String transactionId,
+    public TransactionResource(@PathParam("transactionId") final String transactionId,
                                @RequestTime final Provider<DateTime> now,
                                final TransactionDao transactionDao,
                                @Context final SecurityContext securityContext) {
@@ -103,6 +103,7 @@ public class TransactionResource {
         toReturn.setLastModificationTime(transaction.getLastModificationTime());
         toReturn.setStatus(transaction.getStatus());
         toReturn.setTransactionId(transaction.getId());
+        toReturn.setCustomerId(transaction.getCustomerId());
         return toReturn;
     }
 }
