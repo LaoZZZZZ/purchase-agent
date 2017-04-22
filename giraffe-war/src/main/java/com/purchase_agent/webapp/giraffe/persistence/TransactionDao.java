@@ -51,7 +51,7 @@ public class TransactionDao {
         return new SearchImpl();
     }
 
-    public static interface Search {
+    public interface Search {
         Search customId(final long customId);
         Search lastModificationTime(final DateTime lastModified);
         Search saler(final String salerId);
@@ -61,7 +61,7 @@ public class TransactionDao {
         Search limit(final int limit);
         Result execute();
 
-        public static class Result {
+        class Result {
             public List<Transaction> transactions;
             public String encodedCursor;
         }
