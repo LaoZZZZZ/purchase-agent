@@ -1,0 +1,11 @@
+{
+  "status": "PAID",
+  "money_amount": {
+    "amount": "200"
+  },
+  "line_item_ids": [
+	"item_1",
+	"item_2"
+  ],
+  "customer_id":"123"
+}

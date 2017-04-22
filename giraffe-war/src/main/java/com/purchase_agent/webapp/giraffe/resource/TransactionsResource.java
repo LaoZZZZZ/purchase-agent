@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.appengine.repackaged.com.google.common.base.Preconditions;
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableSet;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
@@ -62,24 +63,43 @@ public class TransactionsResource {
     @Path("search")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response search(@QueryParam("customerId") final long customerId,
+    public Response search(@QueryParam("customerId") final Long customerId,
                            @QueryParam("saler") final String saler,
                            @QueryParam("status") final com.purchase_agent.webapp.giraffe.objectify_entity.Transaction.Status status,
                            @QueryParam("next") final String next,
-                           @QueryParam("limit") final int limit,
-                           @QueryParam("lastModificationTime") final long lastModificationTime) {
+                           @QueryParam("limit") final Integer limit,
+                           @QueryParam("lastModificationTime") final Long lastModificationTime) {
         if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
             logger.warning("Unauthorized user to create transaction!");
             return Response.status(Response.Status.FORBIDDEN).build();
         }
+        TransactionDao.Search search = transactionDao
+                .search();
+        if (customerId != null) {
+            search = search.customId(customerId);
+        }
 
-        final TransactionDao.Search.Result result = transactionDao
-                .search()
-                .customId(customerId)
-                .saler(saler)
-                .status(status)
-                .limit(limit)
-                .next(next).execute();
+        if (!Strings.isNullOrEmpty(saler)) {
+            search = search.saler(saler);
+        }
+
+        if (status != null) {
+            search = search.status(status);
+        }
+
+        if (!Strings.isNullOrEmpty(next)) {
+            search = search.next(next);
+        }
+
+        if (limit != null) {
+            search = search.limit(limit);
+        }
+
+        if (lastModificationTime != null) {
+            search = search.lastModificationTime(new DateTime(lastModificationTime));
+        }
+
+        final TransactionDao.Search.Result result = search.execute();
         UserAuthModel userAuthModel = null;
         if (securityContext.isUserInRole(Roles.USER)) {
             userAuthModel = getUserInfo();
@@ -92,7 +112,11 @@ public class TransactionsResource {
         }
         Transactions transactions = new Transactions();
         transactions.setTransactions(transactionList);
-        return Response.ok(transactions).build();
+        Response.ResponseBuilder responseBuilder = Response.ok(transactions);
+        if (!Strings.isNullOrEmpty(result.encodedCursor)) {
+            responseBuilder = responseBuilder.location(links.forSearchTransactions(result.encodedCursor));
+        }
+        return responseBuilder.build();
     }
 
     @RolesAllowed(Roles.USER)
