@@ -112,7 +112,11 @@ public class TransactionsResource {
         }
         Transactions transactions = new Transactions();
         transactions.setTransactions(transactionList);
-        return Response.ok(transactions).build();
+        Response.ResponseBuilder responseBuilder = Response.ok(transactions);
+        if (!Strings.isNullOrEmpty(result.encodedCursor)) {
+            responseBuilder = responseBuilder.location(links.forSearchTransactions(result.encodedCursor));
+        }
+        return responseBuilder.build();
     }
 
     @RolesAllowed(Roles.USER)
