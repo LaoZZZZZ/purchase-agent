@@ -48,6 +48,9 @@ public class LineItem {
     @Index
     private Status status;
 
+    @Index
+    private String owner;
+
     public String getId() {
         return id;
     }
@@ -110,5 +113,13 @@ public class LineItem {
 
     public void setStatus(final Status status) {
         this.status = status;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(final String owner) {
+        this.owner = owner;
     }
 }
