@@ -1,7 +1,16 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
+import com.google.api.client.repackaged.com.google.common.base.Strings;
+import com.google.appengine.repackaged.com.google.common.base.Preconditions;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
+import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
+import com.purchase_agent.webapp.giraffe.authentication.UserPrincipal;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
+import com.purchase_agent.webapp.giraffe.mediatype.LineItems;
+import com.purchase_agent.webapp.giraffe.mediatype.Transaction;
+import com.purchase_agent.webapp.giraffe.mediatype.Transactions;
+import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
+import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import com.purchase_agent.webapp.giraffe.mediatype.LineItem;
 import org.joda.time.DateTime;
@@ -14,10 +23,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -33,23 +45,83 @@ public class LineItemsResource {
     private final Provider<DateTime> requestTime;
     private final SecurityContext securityContext;
     private final Links links;
+    private final LineItemDao lineItemDao;
 
     @Inject
     public LineItemsResource(@RequestTime final Provider<DateTime> requestTime,
                              @Context final SecurityContext securityContext,
-                             final Links links) {
+                             final Links links,
+                             final LineItemDao lineItemDao) {
         this.requestTime = requestTime;
         this.securityContext = securityContext;
         this.links = links;
+        this.lineItemDao = lineItemDao;
     }
 
-    @Path("/{lineItemId}")
+    @Path("/single/{lineItemId}")
     public Class<LineItemResource> id() {return LineItemResource.class;}
 
+    @RolesAllowed({Roles.ADMIN, Roles.USER})
     @Path("/search")
     @GET
-    public Response searchItems() {
-        return Response.ok().build();
+    public Response searchItems(@QueryParam("category") final com.purchase_agent.webapp.giraffe.objectify_entity.LineItem.Category category,
+                                @QueryParam("transaction_id") final String transactionId,
+                                @QueryParam("brand") final String brand,
+                                @QueryParam("status") final com.purchase_agent.webapp.giraffe.objectify_entity.LineItem.Status status,
+                                @QueryParam("next") final String next,
+                                @QueryParam("owner") final String owner,
+                                @QueryParam("limit") final Integer limit) {
+        if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
+            logger.warning("Unauthorized user to create transaction!");
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        LineItemDao.Search search = this.lineItemDao.search();
+        if (category != null) {
+            search = search.category(category);
+        }
+
+        if (!Strings.isNullOrEmpty(transactionId)) {
+            search = search.transactionId(transactionId);
+        }
+
+        if (status != null) {
+            search = search.status(status);
+        }
+
+        if (!Strings.isNullOrEmpty(next)) {
+            search = search.next(next);
+        }
+
+        if (limit != null) {
+            search = search.limit(limit);
+        }
+
+        if (!Strings.isNullOrEmpty(brand)) {
+            search = search.brand(brand);
+        }
+
+        if (!Strings.isNullOrEmpty(owner)) {
+            search = search.owner(owner);
+        }
+        
+        final LineItemDao.Search.Result result = search.execute();
+        UserAuthModel userAuthModel = null;
+        if (securityContext.isUserInRole(Roles.USER)) {
+            userAuthModel = getUserInfo();
+        }
+        List<LineItem> lineitemList = new ArrayList<>();
+        for (final com.purchase_agent.webapp.giraffe.objectify_entity.LineItem lineItem: result.lineItems) {
+            if (userAuthModel == null || lineItem.getOwner().equals(userAuthModel.getUsername())) {
+                lineitemList.add(LineItemResource.toMediaType(lineItem));
+            }
+        }
+        LineItems lineItems = new LineItems();
+        lineItems.setLineItems(lineitemList);
+        Response.ResponseBuilder responseBuilder = Response.ok(lineItems);
+        if (!Strings.isNullOrEmpty(result.encodedCursor)) {
+            responseBuilder = responseBuilder.location(links.forSearchLineItems(result.encodedCursor));
+        }
+        return responseBuilder.build();
     }
 
 
@@ -83,5 +155,13 @@ public class LineItemsResource {
 
         ofy().save().entity(persisted).now();
         return Response.created(links.forLineItemCreation(persisted.getId())).build();
+    }
+
+    // TODO(lukez): refactor this function.
+    private UserAuthModel getUserInfo() {
+        UserPrincipal userPrincipal = (UserPrincipal) this.securityContext.getUserPrincipal();
+        UserAuthModel authModel = userPrincipal.getUser();
+        Preconditions.checkNotNull(authModel);
+        return authModel;
     }
 }

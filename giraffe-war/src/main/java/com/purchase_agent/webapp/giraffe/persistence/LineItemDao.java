@@ -57,6 +57,7 @@ public class LineItemDao {
         Search purchaseTime(final DateTime purchaseTime);
         Search limit(final int limit);
         Search status(final LineItem.Status status);
+        Search owner(final String owner);
         Result execute();
         Search next(final String encodedCursor);
 
@@ -69,7 +70,6 @@ public class LineItemDao {
     private static class SearchImpl implements Search {
         private Query<LineItem> query;
         private int numResult;
-        private static int CHUNK = 1000;
         private static int PAGE_SIZE = 1000;
 
         public SearchImpl() {
@@ -108,6 +108,13 @@ public class LineItemDao {
         public Search status(final LineItem.Status status) {
             if (status != null) {
                 this.query = query.filter("status", status);
+            }
+            return this;
+        }
+
+        public Search owner(final String owner) {
+            if (!Strings.isNullOrEmpty(owner)) {
+                this.query = query.filter("owner", owner);
             }
             return this;
         }

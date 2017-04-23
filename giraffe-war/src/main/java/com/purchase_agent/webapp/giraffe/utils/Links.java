@@ -2,7 +2,9 @@ package com.purchase_agent.webapp.giraffe.utils;
 
 import com.purchase_agent.webapp.giraffe.resource.ExpressCompanyResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
+import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionResource;
+import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
 
 import javax.inject.Inject;
@@ -43,6 +45,20 @@ public class Links {
     public URI forExpressCompany(final String companyId) {
         return this.uriInfo.getBaseUriBuilder().fromResource(ExpressCompanyResource.class)
                 .resolveTemplate("companyId", companyId)
+                .build();
+    }
+
+    public URI forSearchTransactions(final String next) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(TransactionsResource.class)
+                .path("search")
+                .queryParam("next", next)
+                .build();
+    }
+
+    public URI forSearchLineItems(final String next) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(LineItemsResource.class)
+                .path("search")
+                .queryParam("next", next)
                 .build();
     }
 }

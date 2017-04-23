@@ -22,7 +22,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 3/11/17.
  */
-@Path("/line_item/{lineItemId}")
+@Path("/line_item/single/{lineItemId}")
 @Produces(MediaType.APPLICATION_JSON)
 public class LineItemResource {
     private static final Logger logger = Logger.getLogger(LineItemResource.class.getName());
@@ -55,7 +55,7 @@ public class LineItemResource {
         return Response.ok(toMediaType(persisted)).build();
     }
 
-    private com.purchase_agent.webapp.giraffe.mediatype.LineItem toMediaType(final LineItem persisted) {
+    public static com.purchase_agent.webapp.giraffe.mediatype.LineItem toMediaType(final LineItem persisted) {
         com.purchase_agent.webapp.giraffe.mediatype.LineItem toReturn = new com.purchase_agent.webapp.giraffe.mediatype.LineItem();
         toReturn.setPurchaseTime(persisted.getPurchaseTime());
         toReturn.setStatus(persisted.getStatus());
