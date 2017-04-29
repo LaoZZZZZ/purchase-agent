@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
+import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
@@ -33,23 +34,23 @@ public class TransactionResource {
     private final String transactionId;
     private final Provider<DateTime> now;
     private final TransactionDao transactionDao;
-    private final SecurityContext securityContext;
+    private final SecurityContextWrapper securityContextWrapper;
 
     @Inject
     public TransactionResource(@PathParam("transactionId") final String transactionId,
                                @RequestTime final Provider<DateTime> now,
                                final TransactionDao transactionDao,
-                               @Context final SecurityContext securityContext) {
+                               @Context final SecurityContextWrapper securityContextWrapper) {
         this.transactionId = transactionId;
         this.now = now;
         this.transactionDao = transactionDao;
-        this.securityContext = securityContext;
+        this.securityContextWrapper = securityContextWrapper;
     }
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
     @GET
     public Response getTransaction() {
-        if (!securityContext.isUserInRole(Roles.USER) && !securityContext.isUserInRole(Roles.ADMIN)) {
+        if (!securityContextWrapper.isUserInRole(Roles.USER) && !securityContextWrapper.isUserInRole(Roles.ADMIN)) {
             logger.warning("unauthorized user when getting transactions");
             return Response.status(Response.Status.FORBIDDEN).build();
         }
@@ -70,7 +71,7 @@ public class TransactionResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @PUT
     public Response updateTransaction(final com.purchase_agent.webapp.giraffe.mediatype.Transaction transaction) {
-        if (!securityContext.isUserInRole(Roles.USER) && !securityContext.isUserInRole(Roles.ADMIN)) {
+        if (!securityContextWrapper.isUserInRole(Roles.USER) && !securityContextWrapper.isUserInRole(Roles.ADMIN)) {
             logger.warning("unauthorized user when getting transactions");
             return Response.status(Response.Status.FORBIDDEN).build();
         }

@@ -1,16 +1,12 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
-import com.google.api.client.repackaged.com.google.common.base.Strings;
-import com.google.appengine.repackaged.com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
+import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
-import com.purchase_agent.webapp.giraffe.authentication.UserPrincipal;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.mediatype.LineItems;
-import com.purchase_agent.webapp.giraffe.mediatype.Transaction;
-import com.purchase_agent.webapp.giraffe.mediatype.Transactions;
 import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
-import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import com.purchase_agent.webapp.giraffe.mediatype.LineItem;
 import org.joda.time.DateTime;
@@ -27,7 +23,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,17 +38,17 @@ public class LineItemsResource {
     private static final Logger logger = Logger.getLogger(LineItemsResource.class.getName());
 
     private final Provider<DateTime> requestTime;
-    private final SecurityContext securityContext;
+    private final SecurityContextWrapper securityContextWrapper;
     private final Links links;
     private final LineItemDao lineItemDao;
 
     @Inject
     public LineItemsResource(@RequestTime final Provider<DateTime> requestTime,
-                             @Context final SecurityContext securityContext,
+                             @Context final SecurityContextWrapper securityContextWrapper,
                              final Links links,
                              final LineItemDao lineItemDao) {
         this.requestTime = requestTime;
-        this.securityContext = securityContext;
+        this.securityContextWrapper = securityContextWrapper;
         this.links = links;
         this.lineItemDao = lineItemDao;
     }
@@ -71,7 +66,7 @@ public class LineItemsResource {
                                 @QueryParam("next") final String next,
                                 @QueryParam("owner") final String owner,
                                 @QueryParam("limit") final Integer limit) {
-        if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER) && !this.securityContextWrapper.isUserInRole(Roles.ADMIN)) {
             logger.warning("Unauthorized user to create transaction!");
             return Response.status(Response.Status.FORBIDDEN).build();
         }
@@ -106,8 +101,8 @@ public class LineItemsResource {
         
         final LineItemDao.Search.Result result = search.execute();
         UserAuthModel userAuthModel = null;
-        if (securityContext.isUserInRole(Roles.USER)) {
-            userAuthModel = getUserInfo();
+        if (securityContextWrapper.isUserInRole(Roles.USER)) {
+            userAuthModel = securityContextWrapper.getUserInfo();
         }
         List<LineItem> lineitemList = new ArrayList<>();
         for (final com.purchase_agent.webapp.giraffe.objectify_entity.LineItem lineItem: result.lineItems) {
@@ -129,7 +124,7 @@ public class LineItemsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createLineItem(final LineItem lineItem) {
-        if (!this.securityContext.isUserInRole(Roles.USER)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER)) {
             logger.warning("Unauthorized user to create line item!");
             return Response.status(Response.Status.FORBIDDEN).build();
         }
@@ -155,13 +150,5 @@ public class LineItemsResource {
 
         ofy().save().entity(persisted).now();
         return Response.created(links.forLineItemCreation(persisted.getId())).build();
-    }
-
-    // TODO(lukez): refactor this function.
-    private UserAuthModel getUserInfo() {
-        UserPrincipal userPrincipal = (UserPrincipal) this.securityContext.getUserPrincipal();
-        UserAuthModel authModel = userPrincipal.getUser();
-        Preconditions.checkNotNull(authModel);
-        return authModel;
     }
 }

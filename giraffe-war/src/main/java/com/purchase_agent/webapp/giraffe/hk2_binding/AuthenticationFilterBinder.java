@@ -5,7 +5,6 @@ import com.purchase_agent.webapp.giraffe.filters.AuthenticationFilter;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.process.internal.RequestScoped;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;

@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
+import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 
 import com.purchase_agent.webapp.giraffe.mediatype.ExpressCompany;
@@ -16,7 +17,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -30,15 +30,15 @@ public class ExpressCompaniesResource {
     private static final Logger logger = Logger.getLogger(ExpressCompaniesResource.class.getName());
 
     private final DateTime requestTime;
-    private final SecurityContext securityContext;
+    private final SecurityContextWrapper securityContextWrapper;
     private final Links links;
 
     @Inject
     public ExpressCompaniesResource(@RequestTime final DateTime requestTime,
-                                    @Context final SecurityContext securityContext,
+                                    @Context final SecurityContextWrapper securityContextWrapper,
                                     final Links links) {
         this.requestTime = requestTime;
-        this.securityContext = securityContext;
+        this.securityContextWrapper = securityContextWrapper;
         this.links = links;
     }
 
@@ -49,7 +49,7 @@ public class ExpressCompaniesResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createExpressCompany(final ExpressCompany expressCompany) {
-        if (!this.securityContext.isUserInRole(Roles.USER) || !this.securityContext.isUserInRole(Roles.ADMIN)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER) || !this.securityContextWrapper.isUserInRole(Roles.ADMIN)) {
             logger.warning("Unauthorized user to create line item!");
             return Response.status(Response.Status.FORBIDDEN).build();
         }
