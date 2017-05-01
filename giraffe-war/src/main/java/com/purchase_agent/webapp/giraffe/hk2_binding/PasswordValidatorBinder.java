@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 /**
  * Created by lukez on 2/20/17.
  */
-public class PasswordValidatorBinder extends AbstractBinder{
+public class PasswordValidatorBinder extends AbstractBinder {
     private static class PasswordValidatorFactory  implements Factory<PasswordValidator> {
         private final PasswordValidator passwordValidator;
 

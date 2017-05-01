@@ -3,6 +3,7 @@ package com.purchase_agent.webapp.giraffe.resource;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
+import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import org.joda.time.DateTime;
 
 import javax.annotation.security.RolesAllowed;
@@ -15,7 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -28,22 +28,22 @@ public class LineItemResource {
     private static final Logger logger = Logger.getLogger(LineItemResource.class.getName());
 
     private final Provider<DateTime> requestTime;
-    private final SecurityContext securityContext;
+    private final SecurityContextWrapper securityContextWrapper;
     private final String lineItemId;
 
     @Inject
     public LineItemResource(@RequestTime final Provider<DateTime> requestTime,
-                            @Context final SecurityContext securityContext,
+                            @Context final SecurityContextWrapper securityContextWrapper,
                             @PathParam("lineItemId") final String lineItemId) {
         this.requestTime = requestTime;
-        this.securityContext = securityContext;
+        this.securityContextWrapper = securityContextWrapper;
         this.lineItemId = lineItemId;
     }
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
     @GET
     public Response getLineItem() {
-        if (!this.securityContext.isUserInRole(Roles.USER) && !this.securityContext.isUserInRole(Roles.ADMIN)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER) && !this.securityContextWrapper.isUserInRole(Roles.ADMIN)) {
             logger.warning("User does not have access to line item " + lineItemId);
             return Response.status(Response.Status.FORBIDDEN).build();
         }

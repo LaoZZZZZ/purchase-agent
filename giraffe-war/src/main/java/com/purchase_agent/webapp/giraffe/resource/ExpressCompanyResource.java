@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
+import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.ExpressCompany;
 import com.purchase_agent.webapp.giraffe.utils.Links;
@@ -13,7 +14,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -27,24 +27,24 @@ public class ExpressCompanyResource {
 
     private final String companyId;
     private final DateTime requestTime;
-    private final SecurityContext securityContext;
+    private final SecurityContextWrapper securityContextWrapper;
     private final Links links;
 
     @Inject
     public ExpressCompanyResource(@PathParam("companyId") final String companyId,
                                   @RequestTime final DateTime requestTime,
-                                  @Context final SecurityContext securityContext,
+                                  @Context final SecurityContextWrapper securityContextWrapper,
                                   final Links links) {
         this.companyId = companyId;
         this.requestTime = requestTime;
-        this.securityContext = securityContext;
+        this.securityContextWrapper = securityContextWrapper;
         this.links = links;
     }
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
     @GET
     public Response getExpressCompany() {
-        if (!this.securityContext.isUserInRole(Roles.USER) || !this.securityContext.isUserInRole(Roles.ADMIN)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER) || !this.securityContextWrapper.isUserInRole(Roles.ADMIN)) {
             logger.warning("Unauthorized user to create line item!");
             return Response.status(Response.Status.FORBIDDEN).build();
         }

@@ -10,6 +10,7 @@ import com.purchase_agent.webapp.giraffe.hk2_binding.RequestTimeBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.SensitiveInfoFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthModelHandlerBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthResponseFilterBinder;
+import com.purchase_agent.webapp.giraffe.hk2_binding.SecurityContextWrapperBinder;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
 import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
@@ -57,6 +58,7 @@ public class JerseyConfig extends ResourceConfig {
         register(new SensitiveInfoFilterBinder());
         register(new UserAuthResponseFilterBinder());
         register(new AuthenticationFilterBinder());
+        register(new SecurityContextWrapperBinder());
     }
 
     public static class Binder extends AbstractBinder {
