@@ -6,6 +6,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
@@ -17,8 +18,8 @@ public class SecurityContextWrapperBinder extends AbstractBinder {
         private final SecurityContextWrapper securityContextWrapper;
 
         @Inject
-        SecurityContextWrapperFactory(@Context final SecurityContext securityContext) {
-            this.securityContextWrapper = new SecurityContextWrapper(securityContext);
+        SecurityContextWrapperFactory(@Context final Provider<SecurityContext> securityContextProvider) {
+            this.securityContextWrapper = new SecurityContextWrapper(securityContextProvider);
         }
 
         @Override

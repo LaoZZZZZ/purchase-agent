@@ -6,8 +6,8 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Work;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
+import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
-import com.purchase_agent.webapp.giraffe.authentication.UserPrincipal;
 import com.purchase_agent.webapp.giraffe.filters.SensitiveInfoFilter;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
@@ -19,13 +19,17 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.ws.rs.*;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -42,19 +46,19 @@ public class UserResource {
     private final PasswordValidator passwordValidator;
     private final Links links;
     private final SensitiveInfoFilter sensitiveInfoFilter;
-    private final SecurityContext securityContext;
+    private final SecurityContextWrapper securityContextWrapper;
     private final Provider<DateTime> now;
 
     @Inject
     public UserResource(final PasswordValidator passwordValidator,
                         final Links links,
                         final SensitiveInfoFilter sensitiveInfoFilter,
-                        @Context final SecurityContext securityContext,
+                        final SecurityContextWrapper securityContextWrapper,
                         @RequestTime final Provider<DateTime> now) {
         this.passwordValidator = passwordValidator;
         this.links = links;
         this.sensitiveInfoFilter = sensitiveInfoFilter;
-        this.securityContext = securityContext;
+        this.securityContextWrapper = securityContextWrapper;
         this.now = now;
     }
 
@@ -63,7 +67,7 @@ public class UserResource {
     @GET
     public Response getUser(@QueryParam("username") final String username,
                             @QueryParam("password") final String password) {
-        if (!this.securityContext.isUserInRole(Roles.USER)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER)) {
             logger.warning("unauthorized user " + username);
         }
 
@@ -117,11 +121,11 @@ public class UserResource {
     @Path("/activate/{username}")
     public Response activateUser(@PathParam("username") final String username,
                                  @QueryParam("activationToken") final String activationToken) {
-        if (!this.securityContext.isUserInRole(Roles.USER)) {
+        if (!this.securityContextWrapper.isUserInRole(Roles.USER)) {
            logger.warning("the given user is not authorized!");
             return Response.status(Response.Status.NOT_FOUND).build();
         } else {
-            UserAuthModel userAuthModel = ((UserPrincipal) this.securityContext.getUserPrincipal()).getUser();
+            UserAuthModel userAuthModel = securityContextWrapper.getUserInfo();
             logger.info("User auth model: " + userAuthModel);
         }
 
