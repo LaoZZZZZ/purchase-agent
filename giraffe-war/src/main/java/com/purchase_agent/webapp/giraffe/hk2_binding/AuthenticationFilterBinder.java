@@ -1,14 +1,13 @@
 package com.purchase_agent.webapp.giraffe.hk2_binding;
 
-import com.purchase_agent.webapp.giraffe.authentication.UserAuthModelHandler;
+import com.purchase_agent.webapp.giraffe.authentication.InternalTrafficAuthentication;
+import com.purchase_agent.webapp.giraffe.authentication.TokenAuthentication;
 import com.purchase_agent.webapp.giraffe.filters.AuthenticationFilter;
-import com.purchase_agent.webapp.giraffe.internal.RequestTime;
+import com.purchase_agent.webapp.giraffe.authentication.WhiteListedUserAuthentication;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.joda.time.DateTime;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
@@ -20,9 +19,11 @@ public class AuthenticationFilterBinder extends AbstractBinder {
         private AuthenticationFilter authenticationFilter;
 
         @Inject
-        public AuthenticationFilterFactory(final UserAuthModelHandler userAuthModelHandler,
-                                           @RequestTime final Provider<DateTime> now) {
-            this.authenticationFilter = new AuthenticationFilter(userAuthModelHandler, now);
+        public AuthenticationFilterFactory(final TokenAuthentication tokenAuthentication,
+                                           final WhiteListedUserAuthentication whiteListedUserAuthentication,
+                                           final InternalTrafficAuthentication internalTrafficAnthentication) {
+            this.authenticationFilter = new AuthenticationFilter(tokenAuthentication, whiteListedUserAuthentication,
+                    internalTrafficAnthentication);
         }
 
         @Override

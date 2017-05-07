@@ -6,6 +6,6 @@ package com.purchase_agent.webapp.giraffe.authentication;
 public class Roles {
     public static final String USER = "pa_user";
     public static final String ADMIN = "pa_admin";
-    public static final String UNAUTHORIZED = "unauthorized";
     public static final String ANY = "any";
+    public static final String CRON = "cron_job";
 }

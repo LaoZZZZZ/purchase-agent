@@ -1,6 +1,5 @@
 package com.purchase_agent.webapp.giraffe.filters;
 
-
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.annotation.Priority;

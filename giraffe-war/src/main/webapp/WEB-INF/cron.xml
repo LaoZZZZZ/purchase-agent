@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+    <cron>
+        <url>/cron/transaction/summary</url>
+        <target>${appengine.app.version}</target>
+        <description>daily summary job</description>
+        <schedule>every 24 hours</schedule>
+        <timezone>America/Los_Angeles</timezone>
+    </cron>
+</cronentries>
