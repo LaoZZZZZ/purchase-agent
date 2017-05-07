@@ -5,7 +5,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 import java.util.List;
-
+import org.joda.time.DateTime;
 /**
  * Created by lukez on 3/12/17.
  */
@@ -23,7 +23,17 @@ public class WhiteListedUser {
     @Index
     private boolean isDeleted;
 
+    @Index
+    private DateTime createdTime;
+
+    @Index
+    private DateTime expirationTime;
+
     WhiteListedUser() {
+    }
+
+    public WhiteListedUser(final String userName) {
+        this.userName = userName;
     }
 
     public String getUserName() {
@@ -56,5 +66,21 @@ public class WhiteListedUser {
 
     public void setDeleted(final boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public DateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(final DateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public DateTime getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(final DateTime expirationTime) {
+        this.expirationTime = expirationTime;
     }
 }

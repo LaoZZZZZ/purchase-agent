@@ -2,6 +2,7 @@ package com.purchase_agent.webapp.giraffe.internal;
 
 import com.googlecode.objectify.ObjectifyService;
 import com.purchase_agent.webapp.giraffe.aggregator.TransactionAggregator;
+import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationsBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.ObjectMapperBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.EnvironmentBinder;
@@ -23,6 +24,7 @@ import com.purchase_agent.webapp.giraffe.resource.ExpressCompaniesResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
+import com.purchase_agent.webapp.giraffe.resource.AdministratorResource;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
@@ -30,6 +32,7 @@ import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 
 public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
+            AdministratorResource.class,
             CronJobsResource.class,
             ExpressCompaniesResource.class,
             LineItemsResource.class,
@@ -65,6 +68,7 @@ public class JerseyConfig extends ResourceConfig {
         register(new SecurityContextWrapperBinder());
         register(new TokenAuthenticationBinder());
         register(new UserLoginFilterBinder());
+        register(new AuthenticationsBinder());
     }
 
     public static class Binder extends AbstractBinder {

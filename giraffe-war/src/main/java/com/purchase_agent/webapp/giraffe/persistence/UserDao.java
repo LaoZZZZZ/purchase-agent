@@ -23,6 +23,10 @@ public class UserDao {
         return com.googlecode.objectify.Key.create(User.class, username);
     }
 
+    public User get(final String username) {
+        return ofy().load().key(key(username)).now();
+    }
+
     public Search search() {
         return new SearchImpl();
     }
