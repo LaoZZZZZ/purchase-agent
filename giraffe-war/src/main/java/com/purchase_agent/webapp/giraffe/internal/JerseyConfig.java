@@ -24,6 +24,7 @@ import com.purchase_agent.webapp.giraffe.resource.ExpressCompaniesResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
 import com.purchase_agent.webapp.giraffe.resource.UserResource;
+import com.purchase_agent.webapp.giraffe.resource.AdministratorResource;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
@@ -31,6 +32,7 @@ import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 
 public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
+            AdministratorResource.class,
             CronJobsResource.class,
             ExpressCompaniesResource.class,
             LineItemsResource.class,
