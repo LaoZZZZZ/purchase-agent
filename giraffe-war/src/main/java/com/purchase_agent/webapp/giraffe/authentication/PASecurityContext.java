@@ -11,6 +11,7 @@ import java.util.Set;
 public class PASecurityContext implements SecurityContext {
     public static enum Schema {
         TOKEN("token"),
+        INTERNAL("internal"),
         WHITE_LISTED("white_listed");
 
         private String name;

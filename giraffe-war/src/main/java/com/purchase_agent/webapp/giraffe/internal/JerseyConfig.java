@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.internal;
 
 import com.googlecode.objectify.ObjectifyService;
+import com.purchase_agent.webapp.giraffe.aggregator.TransactionAggregator;
 import com.purchase_agent.webapp.giraffe.hk2_binding.ObjectMapperBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.EnvironmentBinder;
@@ -8,14 +9,16 @@ import com.purchase_agent.webapp.giraffe.hk2_binding.LinksBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.PasswordValidatorBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.RequestTimeBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.SensitiveInfoFilterBinder;
+import com.purchase_agent.webapp.giraffe.hk2_binding.TokenAuthenticationBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthModelHandlerBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.UserAuthResponseFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.SecurityContextWrapperBinder;
+import com.purchase_agent.webapp.giraffe.hk2_binding.UserLoginFilterBinder;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
-import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
 import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.persistence.UserDao;
+import com.purchase_agent.webapp.giraffe.resource.CronJobsResource;
 import com.purchase_agent.webapp.giraffe.resource.ExpressCompaniesResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
@@ -27,10 +30,11 @@ import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 
 public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
+            CronJobsResource.class,
+            ExpressCompaniesResource.class,
             LineItemsResource.class,
             TransactionsResource.class,
             UserResource.class,
-            ExpressCompaniesResource.class,
     };
 
     static {
@@ -59,6 +63,8 @@ public class JerseyConfig extends ResourceConfig {
         register(new UserAuthResponseFilterBinder());
         register(new AuthenticationFilterBinder());
         register(new SecurityContextWrapperBinder());
+        register(new TokenAuthenticationBinder());
+        register(new UserLoginFilterBinder());
     }
 
     public static class Binder extends AbstractBinder {
@@ -68,6 +74,8 @@ public class JerseyConfig extends ResourceConfig {
             bindAsContract(TransactionDao.class);
             bindAsContract(UserDao.class);
             bindAsContract(LineItemDao.class);
+
+            bindAsContract(TransactionAggregator.class);
         }
     }
 }
