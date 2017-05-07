@@ -9,14 +9,14 @@ import java.util.Set;
  * Created by lukez on 3/12/17.
  */
 public class PASecurityContext implements SecurityContext {
-    public static enum Schema {
+    public enum Schema {
         TOKEN("token"),
         INTERNAL("internal"),
         WHITE_LISTED("white_listed");
 
         private String name;
 
-        private Schema(final String name) {
+        Schema(final String name) {
             this.name = name;
         }
 

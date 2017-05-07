@@ -41,7 +41,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(final ContainerRequestContext requestContext) {
         String authToken = requestContext.getHeaderString(AUTH_HEADER);
-        // If there is no token presented, check if the current user is white-listed
+        // If there is no token presented, check if the current user is white-listed or internal traffic.
         if (Strings.isNullOrEmpty(authToken)) {
             SecurityContext securityContext = this.whiteListedUserAuthentication.authenticate(requestContext);
             if (securityContext != null) {
