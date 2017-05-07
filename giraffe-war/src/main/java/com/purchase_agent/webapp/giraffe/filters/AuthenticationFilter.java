@@ -40,6 +40,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) {
+        final String method = requestContext.getMethod();
+        final String uriPath = requestContext.getUriInfo().getPath();
+        // create user endpoint
+        if (method.equals("POST") && uriPath.endsWith("user")) {
+            return;
+        }
         String authToken = requestContext.getHeaderString(AUTH_HEADER);
         // If there is no token presented, check if the current user is white-listed
         if (Strings.isNullOrEmpty(authToken)) {
