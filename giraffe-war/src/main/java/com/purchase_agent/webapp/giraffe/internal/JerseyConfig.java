@@ -2,6 +2,7 @@ package com.purchase_agent.webapp.giraffe.internal;
 
 import com.googlecode.objectify.ObjectifyService;
 import com.purchase_agent.webapp.giraffe.aggregator.TransactionAggregator;
+import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationsBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.ObjectMapperBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationFilterBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.EnvironmentBinder;
@@ -65,6 +66,7 @@ public class JerseyConfig extends ResourceConfig {
         register(new SecurityContextWrapperBinder());
         register(new TokenAuthenticationBinder());
         register(new UserLoginFilterBinder());
+        register(new AuthenticationsBinder());
     }
 
     public static class Binder extends AbstractBinder {
