@@ -5,6 +5,7 @@ import com.googlecode.objectify.ObjectifyService;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModelHandler;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
+import com.purchase_agent.webapp.giraffe.objectify_entity.User;
 import org.joda.time.DateTime;
 
 import javax.annotation.Priority;
@@ -58,6 +59,8 @@ public class UserLoginFilter implements ContainerRequestFilter {
             if (!validateUser(username.get(0), password.get(0))) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
+
+            // TODO(lukez): add activation code check.
             final UserAuthModel userModel = new UserAuthModel();
             userModel.setUsername(username.get(0));
             userModel.setPassword(password.get(0));
@@ -79,6 +82,11 @@ public class UserLoginFilter implements ContainerRequestFilter {
 
         if (!persisted.getPassword().equals(password)) {
             logger.warning("The password does not match!");
+            return false;
+        }
+
+        if (persisted.getStatus() != User.Status.ACTIVE) {
+            logger.warning(String.format("The user %s is no longer an active user", persisted.getUsername()));
             return false;
         }
         return true;

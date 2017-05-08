@@ -66,10 +66,6 @@ public class TransactionsResource {
                            @QueryParam("next") final String next,
                            @QueryParam("limit") final Integer limit,
                            @QueryParam("lastModificationTime") final Long lastModificationTime) {
-        if (!this.securityContextWrapper.isUserInRole(Roles.USER) && !this.securityContextWrapper.isUserInRole(Roles.ADMIN)) {
-            logger.warning("Unauthorized user to create transaction!");
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
         TransactionDao.Search search = transactionDao
                 .search();
         if (customerId != null) {
