@@ -116,19 +116,14 @@ public class UserResource {
                 persisted.getUsername(),persisted.getActivationToken())).build();
     }
 
+    //TODO(lukez): remove this roles restriction.
     @RolesAllowed(Roles.USER)
     @PUT
     @Path("/activate/{username}")
     public Response activateUser(@PathParam("username") final String username,
                                  @QueryParam("activationToken") final String activationToken) {
-        if (!this.securityContextWrapper.isUserInRole(Roles.USER)) {
-           logger.warning("the given user is not authorized!");
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            UserAuthModel userAuthModel = securityContextWrapper.getUserInfo();
-            logger.info("User auth model: " + userAuthModel);
-        }
-
+        UserAuthModel userAuthModel = securityContextWrapper.getUserInfo();
+        logger.info("User auth model: " + userAuthModel);
         if (Strings.isNullOrEmpty(activationToken)) {
             logger.warning("The activation token is null or empty!");
             return Response.status(Response.Status.BAD_REQUEST).build();

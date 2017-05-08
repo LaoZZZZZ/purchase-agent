@@ -20,15 +20,20 @@ public class SecurityContextWrapper {
     }
 
     public UserAuthModel getUserInfo() {
+        setUserAuthModel();
         return userAuthModel;
     }
 
     public boolean isUserInRole(final String role) {
+        setUserAuthModel();
+        return this.securityContextProvider.get().isUserInRole(role);
+    }
+
+    private void setUserAuthModel() {
         if (userAuthModel == null) {
             UserPrincipal userPrincipal = (UserPrincipal) this.securityContextProvider.get().getUserPrincipal();
             userAuthModel = userPrincipal.getUser();
             Preconditions.checkNotNull(userAuthModel);
         }
-        return this.securityContextProvider.get().isUserInRole(role);
     }
 }

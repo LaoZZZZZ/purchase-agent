@@ -12,6 +12,7 @@ public class WhiteListedUser {
     private String userEmail;
     private List<String> roles;
     private DateTime expirationTime;
+    private boolean isDeleted;
 
     public WhiteListedUser() {
     }
@@ -21,7 +22,7 @@ public class WhiteListedUser {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -30,7 +31,7 @@ public class WhiteListedUser {
         return userEmail;
     }
 
-    public void setUserEmail(String userEmail) {
+    public void setUserEmail(final String userEmail) {
         this.userEmail = userEmail;
     }
 
@@ -39,15 +40,25 @@ public class WhiteListedUser {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(final List<String> roles) {
         this.roles = roles;
     }
 
+    @JsonProperty("expiration_time")
     public DateTime getExpirationTime() {
         return expirationTime;
     }
 
     public void setExpirationTime(final DateTime expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    @JsonProperty("is_deleted")
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
