@@ -65,8 +65,8 @@ public class UserResource {
     @RolesAllowed(Roles.USER)
     @Path("/login")
     @GET
-    public Response getUser(@QueryParam("username") final String username,
-                            @QueryParam("password") final String password) {
+    public Response loginUser(@QueryParam("username") final String username,
+                              @QueryParam("password") final String password) {
         if (!this.securityContextWrapper.isUserInRole(Roles.USER)) {
             logger.warning("unauthorized user " + username);
         }

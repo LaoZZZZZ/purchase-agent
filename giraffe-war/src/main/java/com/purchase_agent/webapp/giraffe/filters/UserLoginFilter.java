@@ -6,6 +6,7 @@ import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModelHandler;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
+import com.purchase_agent.webapp.giraffe.resource.UserResource;
 import org.joda.time.DateTime;
 
 import javax.annotation.Priority;
@@ -14,6 +15,8 @@ import javax.inject.Provider;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -31,20 +34,23 @@ public class UserLoginFilter implements ContainerRequestFilter {
 
     private final UserAuthModelHandler authModelHandler;
     private final Provider<DateTime> now;
+    private final ResourceInfo resourceInfo;
 
     @Inject
     public UserLoginFilter(final UserAuthModelHandler userAuthModelHandler,
-                           @RequestTime final javax.inject.Provider<DateTime> now) {
+                           @RequestTime final Provider<DateTime> now,
+                           @Context final ResourceInfo resourceInfo) {
         this.authModelHandler = userAuthModelHandler;
         this.now = now;
+        this.resourceInfo = resourceInfo;
     }
 
     @Override
     public void filter(final ContainerRequestContext containerRequestContext) {
-        final String method = containerRequestContext.getMethod();
-        final String uriPath = containerRequestContext.getUriInfo().getPath();
+        final String className = resourceInfo.getResourceClass().getSimpleName();
+        final String methodName = resourceInfo.getResourceMethod().getName();
         // This is the login request.
-        if (method.equals("GET") && uriPath.endsWith("user/login")) {
+        if (className.equals(UserResource.class.getSimpleName()) && methodName.equals("loginUser")) {
             MultivaluedMap<String, String> queryParameters = containerRequestContext.getUriInfo().getQueryParameters();
             List<String> username = queryParameters.get("username");
             if (username.isEmpty() || username.size() > 1) {

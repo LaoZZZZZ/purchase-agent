@@ -4,11 +4,14 @@ import com.google.common.base.Strings;
 import com.purchase_agent.webapp.giraffe.authentication.InternalTrafficAuthentication;
 import com.purchase_agent.webapp.giraffe.authentication.TokenAuthentication;
 import com.purchase_agent.webapp.giraffe.authentication.WhiteListedUserAuthentication;
+import com.purchase_agent.webapp.giraffe.resource.UserResource;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.WebApplicationException;
@@ -27,23 +30,27 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private final TokenAuthentication tokenAuthentication;
     private final WhiteListedUserAuthentication whiteListedUserAuthentication;
     private final InternalTrafficAuthentication internalTrafficAnthentication;
+    private final ResourceInfo resourceInfo;
 
     @Inject
     public AuthenticationFilter(final TokenAuthentication tokenAuthentication,
                                 final WhiteListedUserAuthentication whiteListedUserAuthentication,
-                                final InternalTrafficAuthentication internalTrafficAnthentication) {
+                                final InternalTrafficAuthentication internalTrafficAnthentication,
+                                @Context final ResourceInfo resourceInfo) {
         super();
         this.tokenAuthentication = tokenAuthentication;
         this.whiteListedUserAuthentication = whiteListedUserAuthentication;
         this.internalTrafficAnthentication = internalTrafficAnthentication;
+        this.resourceInfo = resourceInfo;
     }
 
     @Override
     public void filter(final ContainerRequestContext requestContext) {
-        final String method = requestContext.getMethod();
-        final String uriPath = requestContext.getUriInfo().getPath();
+        final String method = resourceInfo.getResourceMethod().getName();
+        final String resourceName = resourceInfo.getResourceClass().getSimpleName();
         // create user endpoint
-        if (method.equals("POST") && uriPath.endsWith("user")) {
+        if (resourceName.equals(UserResource.class.getSimpleName()) &&
+                (method.equals("createUser") || method.equals("activateUser"))) {
             return;
         }
         String authToken = requestContext.getHeaderString(AUTH_HEADER);
