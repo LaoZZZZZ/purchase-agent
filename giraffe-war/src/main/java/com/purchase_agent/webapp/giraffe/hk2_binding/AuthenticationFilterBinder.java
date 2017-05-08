@@ -9,6 +9,8 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ResourceInfo;
 
 /**
  * Created by lukez on 2/28/17.
@@ -21,9 +23,10 @@ public class AuthenticationFilterBinder extends AbstractBinder {
         @Inject
         public AuthenticationFilterFactory(final TokenAuthentication tokenAuthentication,
                                            final WhiteListedUserAuthentication whiteListedUserAuthentication,
-                                           final InternalTrafficAuthentication internalTrafficAnthentication) {
+                                           final InternalTrafficAuthentication internalTrafficAnthentication,
+                                           @Context final ResourceInfo resourceInfo) {
             this.authenticationFilter = new AuthenticationFilter(tokenAuthentication, whiteListedUserAuthentication,
-                    internalTrafficAnthentication);
+                    internalTrafficAnthentication, resourceInfo);
         }
 
         @Override

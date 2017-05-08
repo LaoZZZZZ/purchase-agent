@@ -8,7 +8,9 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
+import javax.ws.rs.container.ResourceInfo;
 
 /**
  * Created by lukez on 5/6/17.
@@ -19,8 +21,9 @@ public class UserLoginFilterBinder extends AbstractBinder {
 
         @Inject
         public UserLoginFilterFactory(final UserAuthModelHandler userAuthModelHandler,
-                                      @RequestTime final javax.inject.Provider<DateTime> now) {
-            this.userLoginFilter = new UserLoginFilter(userAuthModelHandler, now);
+                                      @RequestTime final Provider<DateTime> now,
+                                      final ResourceInfo resourceInfo) {
+            this.userLoginFilter = new UserLoginFilter(userAuthModelHandler, now, resourceInfo);
         }
 
         @Override
