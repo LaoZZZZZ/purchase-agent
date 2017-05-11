@@ -18,7 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
-
+import java.util.List;
 /**
  * Created by lukez on 5/4/17.
  */
@@ -45,10 +45,7 @@ public class CronJobsResource {
     public Response summarizeTransactions() {
         final UserAuthModel authModel = this.securityContextWrapperProvider.get().getUserInfo();
         logger.info("triggered by " + authModel.getUsername());
-        final AggregatedTransactionMetrics metrics = this.transactionAggregator.aggregate();
-        if (!Strings.isNullOrEmpty(authModel.getUsername())) {
-            metrics.setUsername(authModel.getUsername());
-        }
+        final List<AggregatedTransactionMetrics> metrics = this.transactionAggregator.aggregate();
         logger.info("returning metrics");
         return Response.ok(metrics).build();
     }
