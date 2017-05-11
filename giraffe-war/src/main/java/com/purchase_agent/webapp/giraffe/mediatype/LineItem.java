@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
  * Created by lukez on 4/5/17.
  */
 public class LineItem {
+    private String description;
     private com.purchase_agent.webapp.giraffe.objectify_entity.LineItem.Status status;
     private com.purchase_agent.webapp.giraffe.objectify_entity.LineItem.Category category;
     private MoneyAmount originalPrice;
@@ -80,5 +81,14 @@ public class LineItem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @JsonProperty("description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 }
