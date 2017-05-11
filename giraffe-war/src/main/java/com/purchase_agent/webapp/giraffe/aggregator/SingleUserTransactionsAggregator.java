@@ -29,7 +29,7 @@ public class SingleUserTransactionsAggregator {
         AggregatedTransactionMetrics userTransactionMetrics = new AggregatedTransactionMetrics();
         do {
             AggregatedTransactionMetrics batchMetrics = aggregateTransactions(searchResult.transactions);
-            userTransactionMetrics = AggregatedTransactionMetrics.Builder.combine(userTransactionMetrics, batchMetrics);
+            userTransactionMetrics = AggregatedTransactionMetrics.sum(userTransactionMetrics, batchMetrics);
 
         } while (searchResult.encodedCursor != null);
         return userTransactionMetrics;
@@ -39,20 +39,9 @@ public class SingleUserTransactionsAggregator {
         AggregatedTransactionMetrics toReturn = new AggregatedTransactionMetrics();
         for (final Transaction transaction : transactions) {
             switch (transaction.getStatus()) {
-                case RESERVE:
-                    toReturn.getReserved().add(transaction.getId());
+                case PAID: case SHIPPED: case DELIVERED:
                     break;
-                case PAID:
-                    toReturn.getPaid().add(transaction.getId());
-                    break;
-                case SHIPPED:
-                    toReturn.getShipped().add(transaction.getId());
-                    break;
-                case DELIVERED:
-                    toReturn.getDelivered().add(transaction.getId());
-                    break;
-                case RETURNED:
-                    toReturn.getReserved().add(transaction.getId());
+                case RESERVE: case RETURNED:
                     break;
                 default:
                     throw new RuntimeException("unexpected transaction status");
