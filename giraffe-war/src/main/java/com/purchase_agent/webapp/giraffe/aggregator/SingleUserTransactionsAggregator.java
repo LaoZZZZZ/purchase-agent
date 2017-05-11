@@ -3,6 +3,7 @@ package com.purchase_agent.webapp.giraffe.aggregator;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
+import org.joda.time.DateTime;
 
 import java.util.logging.Logger;
 import java.util.List;
@@ -14,32 +15,30 @@ public class SingleUserTransactionsAggregator {
     private static final Logger logger = Logger.getLogger(SingleUserTransactionsAggregator.class.getName());
 
     private final String username;
+    private final List<Transaction> transactionList;
+    private final DateTime creationTime;
 
-
-    private SingleUserTransactionsAggregator(final String username) {
+    private SingleUserTransactionsAggregator(final String username, final List<Transaction> transactionList,
+                                             final DateTime creationTime) {
         this.username = username;
+        this.transactionList = transactionList;
+        this.creationTime = creationTime;
     }
 
-    public SingleUserTransactionsAggregator build(final String username) {
-        return new SingleUserTransactionsAggregator(username);
+    public static SingleUserTransactionsAggregator build(final String username, final List<Transaction> transactionList,
+                                                         final DateTime creationTime) {
+        return new SingleUserTransactionsAggregator(username, transactionList, creationTime);
     }
 
-    public AggregatedTransactionMetrics aggregateTransactionMetrics(final TransactionDao transactionDao) {
-        final TransactionDao.Search.Result searchResult = transactionDao.search().saler(username).execute();
-        AggregatedTransactionMetrics userTransactionMetrics = new AggregatedTransactionMetrics();
-        do {
-            AggregatedTransactionMetrics batchMetrics = aggregateTransactions(searchResult.transactions);
-            userTransactionMetrics = AggregatedTransactionMetrics.sum(userTransactionMetrics, batchMetrics);
-
-        } while (searchResult.encodedCursor != null);
-        return userTransactionMetrics;
-    }
-
-    private AggregatedTransactionMetrics aggregateTransactions(final List<Transaction> transactions) {
-        AggregatedTransactionMetrics toReturn = new AggregatedTransactionMetrics();
-        for (final Transaction transaction : transactions) {
+    public AggregatedTransactionMetrics aggregateTransactions() {
+        logger.info(String.format("Start aggregating metrics for user %s", username));
+        AggregatedTransactionMetrics toReturn = buildAggregatedTransactionMetrics();
+        int numOfEarnedTransaction = 0;
+        for (final Transaction transaction : transactionList) {
             switch (transaction.getStatus()) {
                 case PAID: case SHIPPED: case DELIVERED:
+                    toReturn = AggregatedTransactionMetrics.sum(toReturn, transformToMetrics(transaction));
+                    numOfEarnedTransaction += 1;
                     break;
                 case RESERVE: case RETURNED:
                     break;
@@ -47,6 +46,25 @@ public class SingleUserTransactionsAggregator {
                     throw new RuntimeException("unexpected transaction status");
             }
         }
+        logger.info(String.format("There are %d paid transactions", numOfEarnedTransaction));
+        return toReturn;
+    }
+
+    // Transform a transaction to single "aggregated" metrics
+    private AggregatedTransactionMetrics transformToMetrics(final Transaction transaction) {
+        AggregatedTransactionMetrics toReturn = buildAggregatedTransactionMetrics();
+        toReturn.setDailyEarningInCents(transaction.getMoneyAmount());
+        toReturn.setWeekLyEarningInCents(transaction.getMoneyAmount());
+        toReturn.setMonthlyEarningInCents(transaction.getMoneyAmount());
+        toReturn.setAnnualEarningInCents(transaction.getMoneyAmount());
+        return toReturn;
+    }
+
+    // Add username and creation time to the metrics.
+    private AggregatedTransactionMetrics buildAggregatedTransactionMetrics() {
+        AggregatedTransactionMetrics toReturn = new AggregatedTransactionMetrics();
+        toReturn.setCreationTime(creationTime);
+        toReturn.setUsername(username);
         return toReturn;
     }
 }
