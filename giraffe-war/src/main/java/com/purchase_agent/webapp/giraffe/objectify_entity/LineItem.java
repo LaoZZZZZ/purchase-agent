@@ -11,7 +11,8 @@ import org.joda.time.DateTime;
  */
 @Entity(name = "PA_LINEITEM")
 public class LineItem {
-    public static enum Status {
+    public enum Status {
+        IN_DEMAND,
         IN_STOCK,
         SOLD,
     }
@@ -50,6 +51,8 @@ public class LineItem {
 
     @Index
     private String owner;
+
+    private String description;
 
     public String getId() {
         return id;
@@ -121,5 +124,13 @@ public class LineItem {
 
     public void setOwner(final String owner) {
         this.owner = owner;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 }
