@@ -1,7 +1,7 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
 import com.google.common.base.Strings;
-import com.purchase_agent.webapp.giraffe.aggregator.TransactionAggregator;
+import com.purchase_agent.webapp.giraffe.aggregator.TransactionsAggregator;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
@@ -18,7 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
-
+import java.util.List;
 /**
  * Created by lukez on 5/4/17.
  */
@@ -29,11 +29,11 @@ public class CronJobsResource {
 
     final Provider<DateTime> now;
     final Provider<SecurityContextWrapper> securityContextWrapperProvider;
-    final TransactionAggregator transactionAggregator;
+    final TransactionsAggregator transactionAggregator;
     @Inject
     public CronJobsResource(@RequestTime final Provider<DateTime> now,
                             final Provider<SecurityContextWrapper> securityContextWrapperProvider,
-                            final TransactionAggregator transactionAggregator) {
+                            final TransactionsAggregator transactionAggregator) {
         this.now = now;
         this.securityContextWrapperProvider = securityContextWrapperProvider;
         this.transactionAggregator = transactionAggregator;
@@ -45,10 +45,7 @@ public class CronJobsResource {
     public Response summarizeTransactions() {
         final UserAuthModel authModel = this.securityContextWrapperProvider.get().getUserInfo();
         logger.info("triggered by " + authModel.getUsername());
-        final AggregatedTransactionMetrics metrics = this.transactionAggregator.aggregate();
-        if (!Strings.isNullOrEmpty(authModel.getUsername())) {
-            metrics.setUsername(authModel.getUsername());
-        }
+        final List<AggregatedTransactionMetrics> metrics = this.transactionAggregator.aggregate();
         logger.info("returning metrics");
         return Response.ok(metrics).build();
     }
