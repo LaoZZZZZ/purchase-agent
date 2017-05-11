@@ -6,7 +6,7 @@ import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
-import com.purchase_agent.webapp.giraffe.metrics.AggregatedTransactionMetrics;
+import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import org.joda.time.DateTime;
 
 import javax.annotation.security.RolesAllowed;

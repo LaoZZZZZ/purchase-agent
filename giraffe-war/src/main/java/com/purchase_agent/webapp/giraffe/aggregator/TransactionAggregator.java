@@ -1,6 +1,6 @@
 package com.purchase_agent.webapp.giraffe.aggregator;
 
-import com.purchase_agent.webapp.giraffe.metrics.AggregatedTransactionMetrics;
+import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 
 import javax.inject.Inject;
 import java.util.logging.Logger;

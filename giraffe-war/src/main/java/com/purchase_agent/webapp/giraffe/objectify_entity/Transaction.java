@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Entity(name = "PA_TRANSACTION")
 public class Transaction {
-    public static enum Status {
+    public enum Status {
         RESERVE,
         PAID,
         SHIPPED,
