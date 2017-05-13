@@ -11,6 +11,7 @@ import java.math.BigDecimal;
  * Created by lukez on 3/17/17.
  */
 public class MoneyAmount {
+    public static final MoneyAmount ZERO = new MoneyAmount();
     private String amount;
     private Currency currency;
     private static int precision = 2;
@@ -61,7 +62,7 @@ public class MoneyAmount {
     }
 
     public static MoneyAmount add(final MoneyAmount op1, final MoneyAmount op2) {
-        Preconditions.checkArgument(op1.getCurrency() == op2.getCurrency(), "mismatched currency");
+        Preconditions.checkState(op1.getCurrency() == op2.getCurrency(), "mismatched currency");
         MoneyAmount toReturn = new MoneyAmount();
         toReturn.setCurrency(op1.getCurrency());
         toReturn.setAmount(new BigDecimal(op1.getAmount()).add(new BigDecimal(op2.getAmount())));

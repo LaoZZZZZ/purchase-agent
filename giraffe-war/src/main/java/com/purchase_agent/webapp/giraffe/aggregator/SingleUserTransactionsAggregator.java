@@ -1,14 +1,17 @@
 package com.purchase_agent.webapp.giraffe.aggregator;
 
+import com.google.api.client.repackaged.com.google.common.base.Strings;
+import com.google.common.base.Preconditions;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
-import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
+import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;
 
 import java.util.logging.Logger;
 import java.util.List;
 
 /**
+ * This class aggregates transactions that belong to the given user.
  * Created by lukez on 5/9/17.
  */
 public class SingleUserTransactionsAggregator {
@@ -20,24 +23,30 @@ public class SingleUserTransactionsAggregator {
 
     private SingleUserTransactionsAggregator(final String username, final List<Transaction> transactionList,
                                              final DateTime creationTime) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(username), "Missing username");
+        Preconditions.checkArgument(transactionList != null, "invalid transactions list");
+        Preconditions.checkArgument(creationTime != null, "invalid creation time");
         this.username = username;
         this.transactionList = transactionList;
         this.creationTime = creationTime;
     }
 
-    public static SingleUserTransactionsAggregator build(final String username, final List<Transaction> transactionList,
-                                                         final DateTime creationTime) {
-        return new SingleUserTransactionsAggregator(username, transactionList, creationTime);
-    }
-
     public AggregatedTransactionMetrics aggregateTransactions() {
         logger.info(String.format("Start aggregating metrics for user %s", username));
-        AggregatedTransactionMetrics toReturn = buildAggregatedTransactionMetrics();
+        AggregatedTransactionMetrics toReturn = null;
         int numOfEarnedTransaction = 0;
         for (final Transaction transaction : transactionList) {
+            // skip transaction that does not belong to the current user.
+            if (!transaction.getSaler().equals(username)) {
+                continue;
+            }
             switch (transaction.getStatus()) {
                 case PAID: case SHIPPED: case DELIVERED:
-                    toReturn = AggregatedTransactionMetrics.sum(toReturn, transformToMetrics(transaction));
+                    if (toReturn == null) {
+                        toReturn = transformToMetrics(transaction);
+                    } else {
+                        toReturn = AggregatedTransactionMetrics.sum(toReturn, transformToMetrics(transaction));
+                    }
                     numOfEarnedTransaction += 1;
                     break;
                 case RESERVE: case RETURNED:
@@ -53,10 +62,10 @@ public class SingleUserTransactionsAggregator {
     // Transform a transaction to single "aggregated" metrics
     private AggregatedTransactionMetrics transformToMetrics(final Transaction transaction) {
         AggregatedTransactionMetrics toReturn = buildAggregatedTransactionMetrics();
-        toReturn.setDailyEarningInCents(transaction.getMoneyAmount());
-        toReturn.setWeekLyEarningInCents(transaction.getMoneyAmount());
-        toReturn.setMonthlyEarningInCents(transaction.getMoneyAmount());
-        toReturn.setAnnualEarningInCents(transaction.getMoneyAmount());
+        toReturn.setDailyEarningInCents(getDailyMoneyAmount(transaction));
+        toReturn.setWeekLyEarningInCents(getWeeklyMoneyAmount(transaction));
+        toReturn.setMonthlyEarningInCents(getMonthlyMoneyAmount(transaction));
+        toReturn.setAnnualEarningInCents(getAnnualMoneyAmount(transaction));
         return toReturn;
     }
 
@@ -66,5 +75,56 @@ public class SingleUserTransactionsAggregator {
         toReturn.setCreationTime(creationTime);
         toReturn.setUsername(username);
         return toReturn;
+    }
+
+    private MoneyAmount getDailyMoneyAmount(final Transaction transaction) {
+        if (transaction.getLastModificationTime().isAfter(creationTime.minusDays(1))) {
+            return transaction.getMoneyAmount();
+        } else {
+            return MoneyAmount.ZERO;
+        }
+    }
+
+    private MoneyAmount getWeeklyMoneyAmount(final Transaction transaction) {
+        if (transaction.getLastModificationTime().isAfter(creationTime.minusWeeks(1))) {
+            return transaction.getMoneyAmount();
+        } else {
+            return MoneyAmount.ZERO;
+        }
+    }
+
+    private MoneyAmount getMonthlyMoneyAmount(final Transaction transaction) {
+        if (transaction.getLastModificationTime().isAfter(creationTime.minusMonths(1))) {
+            return transaction.getMoneyAmount();
+        } else {
+            return MoneyAmount.ZERO;
+        }
+    }
+
+    private MoneyAmount getAnnualMoneyAmount(final Transaction transaction) {
+        if (transaction.getLastModificationTime().isAfter(creationTime.minusYears(1))) {
+            return transaction.getMoneyAmount();
+        } else {
+            return MoneyAmount.ZERO;
+        }
+    }
+
+    public static class Builder {
+        private String username;
+        private DateTime creationTime;
+        private List<Transaction> transactions;
+        public Builder(final String username, final DateTime creationTime) {
+            this.username = username;
+            this.creationTime = creationTime;
+        }
+
+        public Builder transactions(final List<Transaction> transactions) {
+            this.transactions = transactions;
+            return this;
+        }
+
+        public SingleUserTransactionsAggregator build() {
+            return new SingleUserTransactionsAggregator(username, transactions, creationTime);
+        }
     }
 }

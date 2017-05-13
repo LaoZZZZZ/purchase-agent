@@ -46,7 +46,6 @@ public class LineItemDaoTest extends ObjectifyBaseTest{
         Assert.assertNull(retrieved);
     }
 
-
     @Test
     public void test_search_success() {
         LineItem created = createAndPersistLineItem();
@@ -83,7 +82,7 @@ public class LineItemDaoTest extends ObjectifyBaseTest{
     // test pagination logic
     @Test
     public void test_pagination_success() {
-// create three transaction and set the pagination size to be 2.
+        // create three transaction and set the pagination size to be 2.
         Map<String, LineItem> created = new HashMap<>();
         for (int i = 0; i < 4; ++i) {
             final LineItem lineItem = createAndPersistLineItem();
