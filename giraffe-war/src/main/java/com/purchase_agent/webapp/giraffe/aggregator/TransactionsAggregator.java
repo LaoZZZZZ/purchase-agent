@@ -35,6 +35,10 @@ public class TransactionsAggregator {
         this.now = now;
     }
 
+    // Aggregate transaction for each user.
+    // 1. finds all valid user.
+    // 2. finds all transactions for each user.
+    // 3. aggregate transactions for each user.
     public List<AggregatedTransactionMetrics> aggregate() {
         logger.info("aggregating transaction!");
         final QueryResultIterator<User> users = this.userDao.search().status(User.Status.ACTIVE).execute();
@@ -42,8 +46,8 @@ public class TransactionsAggregator {
         while(users.hasNext()) {
             final User user = users.next();
             List<Transaction> transactionList = getTransactionsForSingleUser(user.getUsername());
-            aggregatedTransactionMetricsList.add(SingleUserTransactionsAggregator.build(user.getUsername(),
-                    transactionList, now.get()).aggregateTransactions());
+            aggregatedTransactionMetricsList.add(new SingleUserTransactionsAggregator.Builder(user.getUsername(),
+                    now.get()).transactions(transactionList).build().aggregateTransactions());
         }
         return aggregatedTransactionMetricsList;
     }
