@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ public class LineItemDaoTest extends ObjectifyBaseTest{
     private static final LineItem.Status STATUS = LineItem.Status.IN_STOCK;
     private static final LineItem.Category CATEGORY = LineItem.Category.BAG;
     private static final String BRAND = "coach";
-    private static final MoneyAmount ORIGINAL_PRICE = new MoneyAmount("100.00", Currency.RMB);
-    private static final MoneyAmount PURCHASE_PRICE = new MoneyAmount("80.00", Currency.RMB);
+    private static final MoneyAmount ORIGINAL_PRICE = new MoneyAmount(new BigDecimal("100.00"), Currency.RMB);
+    private static final MoneyAmount PURCHASE_PRICE = new MoneyAmount(new BigDecimal("80.00"), Currency.RMB);
 
 
     @Test
@@ -44,7 +45,6 @@ public class LineItemDaoTest extends ObjectifyBaseTest{
         LineItem retrieved = this.lineItemDao.get().id("not_found");
         Assert.assertNull(retrieved);
     }
-
 
     @Test
     public void test_search_success() {
@@ -82,7 +82,7 @@ public class LineItemDaoTest extends ObjectifyBaseTest{
     // test pagination logic
     @Test
     public void test_pagination_success() {
-// create three transaction and set the pagination size to be 2.
+        // create three transaction and set the pagination size to be 2.
         Map<String, LineItem> created = new HashMap<>();
         for (int i = 0; i < 4; ++i) {
             final LineItem lineItem = createAndPersistLineItem();
@@ -116,7 +116,7 @@ public class LineItemDaoTest extends ObjectifyBaseTest{
         toReturn.setBrand(BRAND);
         toReturn.setCategory(CATEGORY);
         toReturn.setTransactionId(TRANSACTION_ID);
-        toReturn.setPurchasePrice(ORIGINAL_PRICE);
+        toReturn.setPurchasePrice(PURCHASE_PRICE);
         toReturn.setOriginalPrice(ORIGINAL_PRICE);
         ofy().save().entity(toReturn).now();
         return toReturn;
