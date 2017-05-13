@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import java.util.List;
 
 /**
+ * This class aggregates transactions that belong to the given user.
  * Created by lukez on 5/9/17.
  */
 public class SingleUserTransactionsAggregator {
@@ -35,6 +36,10 @@ public class SingleUserTransactionsAggregator {
         AggregatedTransactionMetrics toReturn = null;
         int numOfEarnedTransaction = 0;
         for (final Transaction transaction : transactionList) {
+            // skip transaction that does not belong to the current user.
+            if (!transaction.getSaler().equals(username)) {
+                continue;
+            }
             switch (transaction.getStatus()) {
                 case PAID: case SHIPPED: case DELIVERED:
                     if (toReturn == null) {
