@@ -1,11 +1,9 @@
-package com.purchase_agent.webapp.giraffe.persistence.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator;
 
-import com.purchase_agent.webapp.giraffe.aggregator.SingleUserTransactionsAggregator;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import com.purchase_agent.webapp.giraffe.utils.Currency;
 import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
-import jdk.Exported;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,10 +60,10 @@ public class SingleUserTransactionsAggregatorTest {
 
     @Test
     public void test_aggregation_differentTime_success() {
-        transactions.get(0).setLastModificationTime(CREATION_TIME.minusHours(2));
-        transactions.get(1).setLastModificationTime(CREATION_TIME.minusDays(2));
-        transactions.get(2).setLastModificationTime(CREATION_TIME.minusWeeks(2));
-        transactions.get(3).setLastModificationTime(CREATION_TIME.minusMonths(2));
+        transactions.get(0).setLastModificationTime(LAST_MODIFIED_TIME.minusHours(2));
+        transactions.get(1).setLastModificationTime(LAST_MODIFIED_TIME.minusDays(2));
+        transactions.get(2).setLastModificationTime(LAST_MODIFIED_TIME.minusWeeks(2));
+        transactions.get(3).setLastModificationTime(LAST_MODIFIED_TIME.minusMonths(2));
         AggregatedTransactionMetrics metrics = singleUserTransactionsAggregator.aggregateTransactions();
         Assert.assertEquals("wrong money amount",
                 new MoneyAmount(AMOUNT.multiply(BigDecimal.ONE), Currency.USD),
