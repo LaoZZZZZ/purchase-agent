@@ -28,8 +28,8 @@ public class TransactionsAggregator {
     private final Provider<DateTime> now;
 
     @Inject
-    TransactionsAggregator(final UserDao userDao, final TransactionDao transactionDao,
-                           @RequestTime final Provider<DateTime> now) {
+    public TransactionsAggregator(final UserDao userDao, final TransactionDao transactionDao,
+                                  @RequestTime final Provider<DateTime> now) {
         this.userDao = userDao;
         this.transactionDao = transactionDao;
         this.now = now;

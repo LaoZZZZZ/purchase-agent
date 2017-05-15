@@ -22,6 +22,17 @@ public class AggregatedTransactionMetrics {
     public AggregatedTransactionMetrics() {
     }
 
+    // Initialize with zero amounts.
+    public
+    AggregatedTransactionMetrics(final String username, final DateTime creationTime) {
+        this.username = username;
+        this.creationTime = creationTime;
+        this.dailyEarningInCents = MoneyAmount.ZERO;
+        this.weekLyEarningInCents = MoneyAmount.ZERO;
+        this.monthlyEarningInCents = MoneyAmount.ZERO;
+        this.annualEarningInCents = MoneyAmount.ZERO;
+    }
+
     @JsonProperty("creation_time")
     public DateTime getCreationTime() {
         return creationTime;
@@ -74,6 +85,35 @@ public class AggregatedTransactionMetrics {
 
     public void setAnnualEarningInCents(final MoneyAmount annualEarningInCents) {
         this.annualEarningInCents = annualEarningInCents;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AggregatedTransactionMetrics that = (AggregatedTransactionMetrics) o;
+
+        if (creationTime != null ? !creationTime.equals(that.creationTime) : that.creationTime != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (dailyEarningInCents != null ? !dailyEarningInCents.equals(that.dailyEarningInCents) : that.dailyEarningInCents != null)
+            return false;
+        if (weekLyEarningInCents != null ? !weekLyEarningInCents.equals(that.weekLyEarningInCents) : that.weekLyEarningInCents != null)
+            return false;
+        if (monthlyEarningInCents != null ? !monthlyEarningInCents.equals(that.monthlyEarningInCents) : that.monthlyEarningInCents != null)
+            return false;
+        return annualEarningInCents != null ? annualEarningInCents.equals(that.annualEarningInCents) : that.annualEarningInCents == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = creationTime != null ? creationTime.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (dailyEarningInCents != null ? dailyEarningInCents.hashCode() : 0);
+        result = 31 * result + (weekLyEarningInCents != null ? weekLyEarningInCents.hashCode() : 0);
+        result = 31 * result + (monthlyEarningInCents != null ? monthlyEarningInCents.hashCode() : 0);
+        result = 31 * result + (annualEarningInCents != null ? annualEarningInCents.hashCode() : 0);
+        return result;
     }
 
     public static AggregatedTransactionMetrics sum(final AggregatedTransactionMetrics metrics1,
