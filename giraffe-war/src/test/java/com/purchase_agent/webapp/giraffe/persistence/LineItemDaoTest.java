@@ -1,8 +1,6 @@
-package com.purchase_agent.webapp.giraffe.persistence.persistence;
+package com.purchase_agent.webapp.giraffe.persistence;
 
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
-import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
-import com.purchase_agent.webapp.giraffe.persistence.ObjectifyBaseTest;
 import com.purchase_agent.webapp.giraffe.utils.Currency;
 import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;

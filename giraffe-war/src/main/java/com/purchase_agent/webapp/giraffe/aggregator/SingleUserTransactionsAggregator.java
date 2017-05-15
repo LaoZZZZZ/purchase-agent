@@ -38,6 +38,8 @@ public class SingleUserTransactionsAggregator {
         for (final Transaction transaction : transactionList) {
             // skip transaction that does not belong to the current user.
             if (!transaction.getSaler().equals(username)) {
+                logger.warning(String.format("Find a transaction (belongs to %s) that does not belong to %s",
+                        transaction.getSaler(), username));
                 continue;
             }
             switch (transaction.getStatus()) {
@@ -55,7 +57,13 @@ public class SingleUserTransactionsAggregator {
                     throw new RuntimeException("unexpected transaction status");
             }
         }
-        logger.info(String.format("There are %d paid transactions", numOfEarnedTransaction));
+        if (numOfEarnedTransaction == 0) {
+            Preconditions.checkState(toReturn == null);
+            logger.info(String.format("There is no paid transaction for this user %s", username));
+            toReturn = new AggregatedTransactionMetrics(username, creationTime);
+        } else {
+            logger.info(String.format("There are %d paid transactions", numOfEarnedTransaction));
+        }
         return toReturn;
     }
 

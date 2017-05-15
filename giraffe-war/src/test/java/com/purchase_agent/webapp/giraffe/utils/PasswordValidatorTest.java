@@ -1,6 +1,5 @@
-package com.purchase_agent.webapp.giraffe.persistence.utils;
+package com.purchase_agent.webapp.giraffe.utils;
 
-import com.purchase_agent.webapp.giraffe.utils.PasswordValidator;
 import org.junit.Assert;
 import org.junit.Test;
 
