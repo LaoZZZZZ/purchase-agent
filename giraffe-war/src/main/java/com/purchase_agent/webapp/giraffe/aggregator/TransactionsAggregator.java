@@ -1,37 +1,31 @@
 package com.purchase_agent.webapp.giraffe.aggregator;
 
-import com.google.common.base.Strings;
-import com.google.appengine.api.datastore.QueryResultIterator;
-
+import com.google.common.base.Preconditions;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
-import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
-import com.purchase_agent.webapp.giraffe.objectify_entity.User;
-import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
-import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import org.joda.time.DateTime;
 
+import com.purchase_agent.webapp.giraffe.mediatype.Transactions;
+import org.joda.time.DateTime;
 import java.util.List;
+
 /**
+ * Aggregate transaction metrics for each user.
  * Created by lukez on 5/4/17.
  */
 public class TransactionsAggregator {
     private static final Logger logger = Logger.getLogger(TransactionsAggregator.class.getName());
 
-    private final UserDao userDao;
-    private final TransactionDao transactionDao;
+    private final TransactionsContainer transactionsContainer;
     private final Provider<DateTime> now;
 
-    @Inject
-    public TransactionsAggregator(final UserDao userDao, final TransactionDao transactionDao,
+    public TransactionsAggregator(final TransactionsContainer transactionsContainer,
                                   @RequestTime final Provider<DateTime> now) {
-        this.userDao = userDao;
-        this.transactionDao = transactionDao;
+        this.transactionsContainer = transactionsContainer;
         this.now = now;
     }
 
@@ -41,24 +35,17 @@ public class TransactionsAggregator {
     // 3. aggregate transactions for each user.
     public List<AggregatedTransactionMetrics> aggregate() {
         logger.info("aggregating transaction!");
-        final QueryResultIterator<User> users = this.userDao.search().status(User.Status.ACTIVE).execute();
         List<AggregatedTransactionMetrics> aggregatedTransactionMetricsList = new ArrayList<>();
-        while(users.hasNext()) {
-            final User user = users.next();
-            List<Transaction> transactionList = getTransactionsForSingleUser(user.getUsername());
-            aggregatedTransactionMetricsList.add(new SingleUserTransactionsAggregator.Builder(user.getUsername(),
-                    now.get()).transactions(transactionList).build().aggregateTransactions());
+        for(final TransactionsContainer.TransactionElement transactionElement : transactionsContainer) {
+            aggregatedTransactionMetricsList.add(aggregateSingleUserMetrics(transactionElement));
         }
         return aggregatedTransactionMetricsList;
     }
 
-    private List<Transaction> getTransactionsForSingleUser(final String username) {
-        TransactionDao.Search.Result searchResult = transactionDao.search().saler(username).execute();
-        List<Transaction> toReturn = new ArrayList<>();
-        do {
-            toReturn.addAll(searchResult.transactions);
-            searchResult = transactionDao.search().saler(username).next(searchResult.encodedCursor).execute();
-        } while (!Strings.isNullOrEmpty(searchResult.encodedCursor));
-        return toReturn;
+    private AggregatedTransactionMetrics aggregateSingleUserMetrics(
+            final TransactionsContainer.TransactionElement transactionElement) {
+        Preconditions.checkNotNull(transactionElement, "invalid transaction record for single user");
+        return new SingleUserTransactionsAggregator.Builder(transactionElement.getUsername(),
+                now.get()).transactions(transactionElement.getTransactionList()).build().aggregateTransactions();
     }
 }
