@@ -31,14 +31,20 @@ public class TransactionsAggregatorTest extends ObjectifyBaseTest {
     private static final DateTime LAST_MODIFIED_TIME = DateTime.parse("2016-10-15");
     private static final int NUM_OF_TRANSACTIONS = 4;
     private final BigDecimal AMOUNT = new BigDecimal(100);
+    private static final TransactionsContainer TRANSACTIONS_CONTAINER =
+            new TransactionsContainer(new UserDao(), new TransactionDao());
+    private TransactionsAggregator transactionsAggregator;
 
-    private TransactionsAggregator transactionsAggregator = new TransactionsAggregator(
-            new UserDao(), new TransactionDao(), new Provider<DateTime>() {
-        @Override
-        public DateTime get() {
-            return CREATION_TIME;
-        }
-    });
+    @Before
+    public void setUpTest() {
+        transactionsAggregator = new TransactionsAggregator(TRANSACTIONS_CONTAINER,
+                new Provider<DateTime>() {
+                    @Override
+                    public DateTime get() {
+                        return CREATION_TIME;
+                    }
+                });
+    }
 
     @Test
     public void test_aggregate_noUser() {
@@ -49,6 +55,7 @@ public class TransactionsAggregatorTest extends ObjectifyBaseTest {
         aggregatedTransactionMetricsList = transactionsAggregator.aggregate();
         Assert.assertTrue("Expect empty list", aggregatedTransactionMetricsList.isEmpty());
     }
+
     @Test
     public void test_aggregate_singleUser() {
         final String username = UUID.randomUUID().toString();
