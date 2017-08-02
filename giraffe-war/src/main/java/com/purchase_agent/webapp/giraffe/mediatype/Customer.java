@@ -60,4 +60,18 @@ public class Customer {
     public void setWechat(final String wechat) {
         this.wechat = wechat;
     }
+
+    public static Customer buildFromPersistedEntity(
+            final com.purchase_agent.webapp.giraffe.objectify_entity.Customer persisted) {
+        if (persisted == null) {
+            return null;
+        }
+        Customer customer = new Customer();
+        customer.setAddress(persisted.getAddress());
+        customer.setId(persisted.getId());
+        customer.setCustomerName(persisted.getCustomerName());
+        customer.setPhoneNumber(persisted.getPhoneNumber());
+        customer.setWechat(persisted.getWechat());
+        return customer;
+    }
 }

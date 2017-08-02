@@ -24,6 +24,7 @@ import java.util.UUID;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
+ * Unit test for transaction aggregator.
  * Created by lukez on 5/13/17.
  */
 public class TransactionsAggregatorTest extends ObjectifyBaseTest {

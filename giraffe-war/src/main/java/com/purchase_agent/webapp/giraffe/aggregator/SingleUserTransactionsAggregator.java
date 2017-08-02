@@ -1,6 +1,6 @@
 package com.purchase_agent.webapp.giraffe.aggregator;
 
-import com.google.api.client.repackaged.com.google.common.base.Strings;
+import com.google.common.base.Strings;
 import com.google.common.base.Preconditions;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
@@ -43,7 +43,9 @@ public class SingleUserTransactionsAggregator {
                 continue;
             }
             switch (transaction.getStatus()) {
-                case PAID: case SHIPPED: case DELIVERED:
+                case PAID:
+                case SHIPPED:
+                case DELIVERED:
                     if (toReturn == null) {
                         toReturn = transformToMetrics(transaction);
                     } else {
@@ -51,7 +53,8 @@ public class SingleUserTransactionsAggregator {
                     }
                     numOfEarnedTransaction += 1;
                     break;
-                case RESERVE: case RETURNED:
+                case RESERVE:
+                case RETURNED:
                     break;
                 default:
                     throw new RuntimeException("unexpected transaction status");
@@ -121,6 +124,7 @@ public class SingleUserTransactionsAggregator {
         private String username;
         private DateTime creationTime;
         private List<Transaction> transactions;
+
         public Builder(final String username, final DateTime creationTime) {
             this.username = username;
             this.creationTime = creationTime;
