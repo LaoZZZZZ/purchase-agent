@@ -4,15 +4,18 @@ import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
 import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
+import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
 import org.joda.time.DateTime;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.GET;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -30,14 +33,16 @@ public class LineItemResource {
     private final Provider<DateTime> requestTime;
     private final SecurityContextWrapper securityContextWrapper;
     private final String lineItemId;
-
+    private final LineItemDao lineItemDao;
     @Inject
     public LineItemResource(@RequestTime final Provider<DateTime> requestTime,
                             @Context final SecurityContextWrapper securityContextWrapper,
-                            @PathParam("lineItemId") final String lineItemId) {
+                            @PathParam("lineItemId") final String lineItemId,
+                            final LineItemDao lineItemDao) {
         this.requestTime = requestTime;
         this.securityContextWrapper = securityContextWrapper;
         this.lineItemId = lineItemId;
+        this.lineItemDao = lineItemDao;
     }
 
     @RolesAllowed({Roles.USER, Roles.ADMIN})
@@ -53,6 +58,30 @@ public class LineItemResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(toMediaType(persisted)).build();
+    }
+
+    @RolesAllowed({Roles.USER, Roles.ADMIN})
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateLineItem(final com.purchase_agent.webapp.giraffe.mediatype.LineItem lineItem) {
+        if (lineItem == null) {
+            logger.info("the request body is null!");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        final LineItem persisted = lineItemDao.get().id(lineItemId);
+        if (persisted.getId().equals(lineItem.getId())) {
+            logger.info("Wrong line item");
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        persisted.setStatus(lineItem.getStatus());
+        persisted.setPurchasePrice(lineItem.getPurchasePrice());
+        persisted.setPurchaseTime(lineItem.getPurchaseTime());
+        persisted.setCategory(lineItem.getCategory());
+        persisted.setBrand(lineItem.getBrand());
+        ofy().save().entity(persisted).now();
+        return Response.noContent().build();
     }
 
     public static com.purchase_agent.webapp.giraffe.mediatype.LineItem toMediaType(final LineItem persisted) {

@@ -1,7 +1,7 @@
 package com.purchase_agent.webapp.giraffe.internal;
 
 import com.googlecode.objectify.ObjectifyService;
-import com.purchase_agent.webapp.giraffe.aggregator.TransactionsAggregator;
+import com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator.TransactionsAggregator;
 import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationsBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.ObjectMapperBinder;
 import com.purchase_agent.webapp.giraffe.hk2_binding.AuthenticationFilterBinder;

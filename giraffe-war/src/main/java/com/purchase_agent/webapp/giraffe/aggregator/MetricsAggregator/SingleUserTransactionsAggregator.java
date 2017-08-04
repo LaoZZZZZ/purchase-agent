@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Preconditions;

@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.google.common.base.Preconditions;
@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.logging.Logger;
 
 /**
  * Created by lukez on 5/19/17.

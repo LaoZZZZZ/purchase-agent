@@ -10,15 +10,12 @@ import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
-public class ShippingTaskGenerator implements TaskAggregator{
-    private static final Logger logger = Logger.getLogger(ShippingTaskGenerator.class.getName());
-
+public class PurchaseAndShippingTaskGenerator implements TaskAggregator{
     private final LineItemDao lineItemDao;
-    public ShippingTaskGenerator(final LineItemDao lineItemDao) {
+    public PurchaseAndShippingTaskGenerator(final LineItemDao lineItemDao) {
         this.lineItemDao = lineItemDao;
     }
 
@@ -41,13 +38,17 @@ public class ShippingTaskGenerator implements TaskAggregator{
             if (!transaction.isDeleted() &&
                     (transaction.getStatus() == Transaction.Status.PAID || transaction.getStatus() == Transaction.Status.RESERVE)) {
                 for (final String itemId : transaction.getItemIds()) {
+                    final Customer customer = Customer.buildFromPersistedEntity(
+                            ofy().load().key(Key.create(com.purchase_agent.webapp.giraffe.objectify_entity.Customer.class
+                                    , transaction.getCustomerId())).now());
                     LineItem item = this.lineItemDao.get().id(itemId);
+                    ActionItem.TaskType type = null;
                     if (item.getStatus() == LineItem.Status.IN_STOCK) {
-                        final Customer customer = Customer.buildFromPersistedEntity(
-                                ofy().load().key(Key.create(com.purchase_agent.webapp.giraffe.objectify_entity.Customer.class
-                                        , transaction.getCustomerId())).now());
-                        actionItems.add(new ActionItem(ActionItem.TaskType.MAILING, LineItemResource.toMediaType(item), customer));
+                        type = ActionItem.TaskType.MAILING;
+                    } else if (item.getStatus() == LineItem.Status.IN_STOCK) {
+                        type = ActionItem.TaskType.PURCHASE;
                     }
+                    actionItems.add(new ActionItem(type, LineItemResource.toMediaType(item), customer));
                 }
             }
         }

@@ -19,7 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
 import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -82,13 +81,14 @@ public class TransactionResource {
             logger.info("cant not find transaction " + this.transactionId);
             return Response.status(Response.Status.NOT_FOUND).build();
         } else {
-            if (transaction.getStatus() != null) {
-                persisted.setStatus(transaction.getStatus());
-            }
-
-            if (transaction.getMoneyAmount() != null) {
-                persisted.setMoneyAmount(transaction.getMoneyAmount());
-            }
+            persisted.setStatus(transaction.getStatus());
+            persisted.setMoneyAmount(transaction.getMoneyAmount());
+            persisted.setDeleted(transaction.isDeleted());
+            persisted.setCustomerId(transaction.getCustomerId());
+            persisted.setItemIds(transaction.getLineItemIds());
+            persisted.setNumOfItems(transaction.getLineItemIds().size());
+            persisted.setMoneyAmount(transaction.getMoneyAmount());
+            persisted.setLastModificationTime(DateTime.now());
             ofy().save().entity(persisted).now();
             persisted.setLastModificationTime(this.now.get());
             return Response.ok().build();
@@ -105,6 +105,7 @@ public class TransactionResource {
         toReturn.setStatus(transaction.getStatus());
         toReturn.setTransactionId(transaction.getId());
         toReturn.setCustomerId(transaction.getCustomerId());
+        toReturn.setDeleted(transaction.isDeleted());
         return toReturn;
     }
 }

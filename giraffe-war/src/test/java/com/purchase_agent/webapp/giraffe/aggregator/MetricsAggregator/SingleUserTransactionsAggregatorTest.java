@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;

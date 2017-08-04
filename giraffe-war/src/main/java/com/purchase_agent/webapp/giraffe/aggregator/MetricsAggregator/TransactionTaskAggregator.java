@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 /**
  * Created by lukez on 5/19/17.

@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 import com.google.common.collect.ImmutableList;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
