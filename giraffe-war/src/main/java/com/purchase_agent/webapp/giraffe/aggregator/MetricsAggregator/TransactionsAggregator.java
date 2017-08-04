@@ -1,15 +1,13 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 import com.google.common.base.Preconditions;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import com.purchase_agent.webapp.giraffe.mediatype.Transactions;
 import org.joda.time.DateTime;
 import java.util.List;
 

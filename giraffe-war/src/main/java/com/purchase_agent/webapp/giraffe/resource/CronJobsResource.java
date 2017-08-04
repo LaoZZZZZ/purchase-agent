@@ -1,7 +1,6 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
-import com.google.common.base.Strings;
-import com.purchase_agent.webapp.giraffe.aggregator.TransactionsAggregator;
+import com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator.TransactionsAggregator;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.authentication.SecurityContextWrapper;
 import com.purchase_agent.webapp.giraffe.authentication.UserAuthModel;

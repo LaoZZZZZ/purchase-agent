@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.aggregator;
+package com.purchase_agent.webapp.giraffe.aggregator.MetricsAggregator;
 
 import com.google.common.collect.ImmutableList;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
@@ -24,6 +24,7 @@ import java.util.UUID;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
+ * Unit test for transaction aggregator.
  * Created by lukez on 5/13/17.
  */
 public class TransactionsAggregatorTest extends ObjectifyBaseTest {

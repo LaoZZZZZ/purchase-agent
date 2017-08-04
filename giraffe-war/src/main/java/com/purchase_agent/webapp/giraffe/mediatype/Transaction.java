@@ -16,6 +16,7 @@ public class Transaction {
     private DateTime creationTime;
     private DateTime lastModificationTime;
     private long customerId;
+    private boolean isDeleted;
 
     public Transaction() {
     }
@@ -81,6 +82,15 @@ public class Transaction {
 
     public void setCustomerId(final long customerId) {
         this.customerId = customerId;
+    }
+
+    @JsonProperty("is_deleted")
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
 
