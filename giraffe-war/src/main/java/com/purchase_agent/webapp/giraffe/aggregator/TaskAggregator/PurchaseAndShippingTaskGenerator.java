@@ -45,7 +45,7 @@ public class PurchaseAndShippingTaskGenerator implements TaskAggregator{
                     ActionItem.TaskType type = null;
                     if (item.getStatus() == LineItem.Status.IN_STOCK) {
                         type = ActionItem.TaskType.MAILING;
-                    } else if (item.getStatus() == LineItem.Status.IN_STOCK) {
+                    } else if (item.getStatus() == LineItem.Status.IN_DEMAND) {
                         type = ActionItem.TaskType.PURCHASE;
                     }
                     actionItems.add(new ActionItem(type, LineItemResource.toMediaType(item), customer));

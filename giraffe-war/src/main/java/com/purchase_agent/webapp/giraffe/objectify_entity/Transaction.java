@@ -5,6 +5,8 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class Transaction {
     @Index
     private String saler;
 
-    private List<String> itemIds;
+    private List<String> itemIds = new ArrayList<>();
 
     private int numOfItems;
 

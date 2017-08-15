@@ -25,8 +25,13 @@ public class Customer {
     @Index
     private String wechat;
 
-    Customer() {
+    public Customer() {
     }
+
+    public Customer(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

@@ -1,4 +1,4 @@
-package com.purchase_agent.webapp.giraffe.persistence;
+package com.purchase_agent.webapp.giraffe;
 import com.google.appengine.tools.development.testing.*;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;

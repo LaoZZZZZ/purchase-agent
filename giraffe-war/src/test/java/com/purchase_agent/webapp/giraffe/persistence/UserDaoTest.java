@@ -2,6 +2,7 @@ package com.purchase_agent.webapp.giraffe.persistence;
 
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.ObjectifyService;
+import com.purchase_agent.webapp.giraffe.ObjectifyBaseTest;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
 import com.googlecode.objectify.VoidWork;
 import org.joda.time.DateTime;
