@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import com.purchase_agent.webapp.giraffe.objectify_entity.User;
-import com.purchase_agent.webapp.giraffe.persistence.ObjectifyBaseTest;
+import com.purchase_agent.webapp.giraffe.ObjectifyBaseTest;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 import com.purchase_agent.webapp.giraffe.utils.Currency;

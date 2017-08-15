@@ -1,6 +1,7 @@
 package com.purchase_agent.webapp.giraffe.persistence;
 
 import com.google.common.collect.ImmutableList;
+import com.purchase_agent.webapp.giraffe.ObjectifyBaseTest;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import org.joda.time.DateTime;
 import org.junit.Assert;

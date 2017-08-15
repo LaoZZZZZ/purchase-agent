@@ -54,6 +54,13 @@ public class LineItem {
 
     private String description;
 
+    public LineItem(final String id) {
+        this.id = id;
+    }
+
+    public LineItem() {
+    }
+
     public String getId() {
         return id;
     }

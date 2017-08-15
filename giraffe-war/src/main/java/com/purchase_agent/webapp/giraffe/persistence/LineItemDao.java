@@ -50,7 +50,7 @@ public class LineItemDao {
         return new SearchImpl();
     }
 
-    public static interface Search {
+    public interface Search {
         Search transactionId(final String transactionId);
         Search category(final LineItem.Category category);
         Search brand(final String brand);

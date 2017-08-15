@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.persistence;
 
+import com.purchase_agent.webapp.giraffe.ObjectifyBaseTest;
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
 import com.purchase_agent.webapp.giraffe.utils.Currency;
 import com.purchase_agent.webapp.giraffe.utils.MoneyAmount;
@@ -19,7 +20,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by lukez on 4/16/17.
  */
-public class LineItemDaoTest extends ObjectifyBaseTest{
+public class LineItemDaoTest extends ObjectifyBaseTest {
     private LineItemDao lineItemDao = new LineItemDao();
 
     private static final DateTime PURCHASE_TIME = DateTime.parse("2016-10-15");
