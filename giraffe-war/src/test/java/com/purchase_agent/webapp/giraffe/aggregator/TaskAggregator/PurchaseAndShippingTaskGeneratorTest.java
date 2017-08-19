@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.List;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
+
 public class PurchaseAndShippingTaskGeneratorTest extends ObjectifyBaseTest {
     private PurchaseAndShippingTaskGenerator purchaseAndShippingTaskGenerator;
     private LineItemDao lineItemDao;
