@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.resource;
 
+import com.googlecode.objectify.Work;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.objectify_entity.LineItem;
@@ -69,19 +70,24 @@ public class LineItemResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        final LineItem persisted = lineItemDao.get().id(lineItemId);
-        if (persisted.getId().equals(lineItem.getId())) {
-            logger.info("Wrong line item");
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        return ofy().transactNew(3, new Work<Response>() {
+            @Override
+            public Response run() {
+                final LineItem persisted = lineItemDao.get().id(lineItemId);
+                if (persisted.getId().equals(lineItem.getId())) {
+                    logger.info("Wrong line item");
+                    return Response.status(Response.Status.NOT_FOUND).build();
+                }
 
-        persisted.setStatus(lineItem.getStatus());
-        persisted.setPurchasePrice(lineItem.getPurchasePrice());
-        persisted.setPurchaseTime(lineItem.getPurchaseTime());
-        persisted.setCategory(lineItem.getCategory());
-        persisted.setBrand(lineItem.getBrand());
-        ofy().save().entity(persisted).now();
-        return Response.noContent().build();
+                persisted.setStatus(lineItem.getStatus());
+                persisted.setPurchasePrice(lineItem.getPurchasePrice());
+                persisted.setPurchaseTime(lineItem.getPurchaseTime());
+                persisted.setCategory(lineItem.getCategory());
+                persisted.setBrand(lineItem.getBrand());
+                ofy().save().entity(persisted).now();
+                return Response.noContent().build();
+            }
+        });
     }
 
     public static com.purchase_agent.webapp.giraffe.mediatype.LineItem toMediaType(final LineItem persisted) {
