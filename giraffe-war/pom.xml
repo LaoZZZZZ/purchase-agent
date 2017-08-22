@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-remote-api</artifactId>
-            <version>${remote.api.version}</version>
+            <version>${appengine.target.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.objectify</groupId>

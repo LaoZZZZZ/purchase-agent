@@ -3,9 +3,8 @@ package com.purchase_agent.webapp.giraffe.script;
 import com.google.common.base.Throwables;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.VoidWork;
 import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Entities;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * A remote script util that helps to login
  * Created by lukez on 2/5/17.
@@ -53,19 +53,24 @@ public class ScriptUtil {
         ScriptUtil util = new ScriptUtil();
         util.login();
 
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ObjectifyService.begin();
+        ofy().transactNew(new VoidWork() {
+            @Override
+            public void vrun() {
+                Transaction transaction = new Transaction();
+                transaction.setStatus(Transaction.Status.RESERVE);
+                transaction.setCustomerId(1);
+                transaction.setCreationTime(DateTime.now());
+                transaction.setDeleted(false);
+                transaction.setId(UUID.randomUUID().toString());
+                transaction.setMoneyAmount(new MoneyAmount());
+                transaction.getMoneyAmount().setAmount(BigDecimal.ONE);
+                transaction.getMoneyAmount().setCurrency(Currency.RMB);
+                transaction.setSaler("test");
+                ObjectifyService.ofy().save().entity(transaction).now();
+            }
+        });
 
-        Transaction transaction = new Transaction();
-        transaction.setStatus(Transaction.Status.RESERVE);
-        transaction.setCustomerId(1);
-        transaction.setCreationTime(DateTime.now());
-        transaction.setDeleted(false);
-        transaction.setId(UUID.randomUUID().toString());
-        transaction.setMoneyAmount(new MoneyAmount());
-        transaction.getMoneyAmount().setAmount(BigDecimal.ONE);
-        transaction.getMoneyAmount().setCurrency(Currency.RMB);
-        transaction.setSaler("test");
-        ObjectifyService.ofy().save().entity(transaction).now();
         util.logout();
         System.exit(0);
 
