@@ -63,7 +63,7 @@ public class Links {
                 .build();
     }
 
-    public URI forCustomerCreation(final String customerId) {
+    public URI forCustomerCreation(final Long customerId) {
         return this.uriInfo.getBaseUriBuilder().fromResource(CustomerResource.class)
                 .resolveTemplate("id", customerId)
                 .build();
