@@ -1,5 +1,6 @@
 package com.purchase_agent.webapp.giraffe.utils;
 
+import com.purchase_agent.webapp.giraffe.resource.CustomerResource;
 import com.purchase_agent.webapp.giraffe.resource.ExpressCompanyResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
@@ -59,6 +60,12 @@ public class Links {
         return this.uriInfo.getBaseUriBuilder().fromResource(LineItemsResource.class)
                 .path("search")
                 .queryParam("next", next)
+                .build();
+    }
+
+    public URI forCustomerCreation(final String customerId) {
+        return this.uriInfo.getBaseUriBuilder().fromResource(CustomerResource.class)
+                .resolveTemplate("id", customerId)
                 .build();
     }
 }

@@ -20,6 +20,7 @@ import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
 import com.purchase_agent.webapp.giraffe.persistence.TransactionDao;
 import com.purchase_agent.webapp.giraffe.persistence.UserDao;
 import com.purchase_agent.webapp.giraffe.resource.CronJobsResource;
+import com.purchase_agent.webapp.giraffe.resource.CustomersResource;
 import com.purchase_agent.webapp.giraffe.resource.ExpressCompaniesResource;
 import com.purchase_agent.webapp.giraffe.resource.LineItemsResource;
 import com.purchase_agent.webapp.giraffe.resource.TransactionsResource;
@@ -34,6 +35,7 @@ public class JerseyConfig extends ResourceConfig {
     private static final Class[] RESOURCES = new Class[]{
             AdministratorResource.class,
             CronJobsResource.class,
+            CustomersResource.class,
             ExpressCompaniesResource.class,
             LineItemsResource.class,
             TransactionsResource.class,

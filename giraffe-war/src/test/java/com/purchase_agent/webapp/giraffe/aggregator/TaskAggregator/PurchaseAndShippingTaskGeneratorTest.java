@@ -29,7 +29,7 @@ public class PurchaseAndShippingTaskGeneratorTest extends ObjectifyBaseTest {
     public void setUpTest() {
         super.setUp();
         lineItemDao = new LineItemDao();
-        Customer customer = new Customer(1);
+        Customer customer = new Customer(1L);
         ofy().save().entity(customer).now();
         customer = ofy().load().entity(customer).now();
 
