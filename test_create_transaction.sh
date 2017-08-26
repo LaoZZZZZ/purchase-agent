@@ -1,5 +1,5 @@
 #!/bin/bash
-curl --request POST \
+curl -v --request POST \
 --url https://purchase-agent.appspot.com/transactions \
 --header 'authorization: eyJ1c2VybmFtZSI6InRlc3QiLCJwYXNzd29yZCI6IjEyMzQiLCJleHBpcmVfdGltZSI6IjIwMTctMDUtMDJUMDc6MzE6NTEuODI1WiIsImF1dGhfdGlja2V0IjoiMTY2NzBhZmMtZDk2My00ODhmLWE0MTYtZWNhMDZhYTdmMDg0In0=' \
 --header 'cache-control: no-cache' \
