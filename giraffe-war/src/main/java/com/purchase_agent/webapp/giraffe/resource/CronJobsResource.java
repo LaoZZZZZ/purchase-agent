@@ -29,6 +29,7 @@ public class CronJobsResource {
     final Provider<DateTime> now;
     final Provider<SecurityContextWrapper> securityContextWrapperProvider;
     final TransactionsAggregator transactionAggregator;
+
     @Inject
     public CronJobsResource(@RequestTime final Provider<DateTime> now,
                             final Provider<SecurityContextWrapper> securityContextWrapperProvider,
