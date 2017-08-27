@@ -37,7 +37,7 @@ public class CustomersResource {
         this.links = links;
     }
 
-    @Path("{id}")
+    @Path("single/{id}")
     public Class<CustomerResource> getId() {
         return CustomerResource.class;
     }
