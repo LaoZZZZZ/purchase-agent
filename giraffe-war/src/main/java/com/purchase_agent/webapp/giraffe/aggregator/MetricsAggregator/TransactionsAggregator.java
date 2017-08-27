@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
 import com.purchase_agent.webapp.giraffe.mediatype.AggregatedTransactionMetrics;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ public class TransactionsAggregator {
     private final TransactionsContainer transactionsContainer;
     private final Provider<DateTime> now;
 
+    @Inject
     public TransactionsAggregator(final TransactionsContainer transactionsContainer,
                                   @RequestTime final Provider<DateTime> now) {
         this.transactionsContainer = transactionsContainer;

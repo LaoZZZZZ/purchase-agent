@@ -8,6 +8,7 @@ import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
 import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class PurchaseAndShippingTaskGenerator implements TaskAggregator{
     private final LineItemDao lineItemDao;
+
+    @Inject
     public PurchaseAndShippingTaskGenerator(final LineItemDao lineItemDao) {
         this.lineItemDao = lineItemDao;
     }

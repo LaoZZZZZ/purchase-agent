@@ -8,6 +8,7 @@ import com.purchase_agent.webapp.giraffe.objectify_entity.Transaction;
 import com.purchase_agent.webapp.giraffe.persistence.LineItemDao;
 import com.purchase_agent.webapp.giraffe.resource.LineItemResource;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ public class DeliveryConfirmationTaskGenerator implements TaskAggregator {
     private static final Logger logger = Logger.getLogger(DeliveryConfirmationTaskGenerator.class.getName());
     private LineItemDao lineItemDao;
 
+    @Inject
     public DeliveryConfirmationTaskGenerator(final LineItemDao lineItemDao) {
         this.lineItemDao = lineItemDao;
     }
