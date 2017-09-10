@@ -3,8 +3,10 @@ package com.purchase_agent.webapp.giraffe.resource;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.common.base.Strings;
+import com.googlecode.objectify.Key;
 import com.purchase_agent.webapp.giraffe.authentication.Roles;
 import com.purchase_agent.webapp.giraffe.internal.RequestTime;
+import com.purchase_agent.webapp.giraffe.mediatype.CustomersList;
 import com.purchase_agent.webapp.giraffe.objectify_entity.Customer;
 import com.purchase_agent.webapp.giraffe.utils.Links;
 import org.joda.time.DateTime;
@@ -19,10 +21,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.logging.Logger;
-
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import static com.googlecode.objectify.ObjectifyService.ofy;
-
 @Path("/customers/")
 @Produces(MediaType.APPLICATION_JSON)
 public class CustomersResource {
@@ -70,7 +74,32 @@ public class CustomersResource {
     @RolesAllowed({Roles.ADMIN, Roles.USER})
     @Path("search")
     @GET
-    public Response getCustomers() {
+    public Response searchCustomers() {
         return Response.ok().build();
+    }
+
+    @RolesAllowed({Roles.USER, Roles.ADMIN})
+    @Path("getCustomers")
+    @GET
+    public Response getCustomers(final CustomersList customersList) {
+        if (customersList == null || customersList.getCustomerList() == null) {
+            logger.info("The customers list is null!");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        List<Key> keys = new ArrayList<>();
+        for (final com.purchase_agent.webapp.giraffe.mediatype.Customer customer : customersList.getCustomerList()) {
+            if (customer != null) {
+                keys.add(Key.create(Customer.class, customer.getId()));
+            }
+        }
+        Map<Key<Customer>, Customer> result = ofy().load().keys(keys);
+        if (result == null) {
+            result = new HashMap<>();
+        }
+        CustomersList toReturn = new CustomersList();
+        for (final Customer customer : result.values()) {
+            toReturn.getCustomerList().add(com.purchase_agent.webapp.giraffe.mediatype.Customer.buildFromPersistedEntity(customer));
+        }
+        return Response.ok(toReturn).build();
     }
 }
