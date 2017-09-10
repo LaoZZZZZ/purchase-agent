@@ -86,13 +86,13 @@ public class CustomersResource {
             logger.info("The customers list is null!");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        List<Key> keys = new ArrayList<>();
+        List<Long> keys = new ArrayList<>();
         for (final com.purchase_agent.webapp.giraffe.mediatype.Customer customer : customersList.getCustomerList()) {
             if (customer != null) {
-                keys.add(Key.create(Customer.class, customer.getId()));
+                keys.add(customer.getId());
             }
         }
-        Map<Key<Customer>, Customer> result = ofy().load().keys(keys);
+        Map<Long, Customer> result = ofy().load().type(Customer.class).ids(keys);
         if (result == null) {
             result = new HashMap<>();
         }
